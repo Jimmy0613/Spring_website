@@ -13,7 +13,7 @@
 	</appender>
 
 	<!-- Application Loggers -->
-	<logger name="com.cre.test">
+	<logger name="com.cre.website">
 		<level value="info" />
 	</logger>
 

@@ -24,7 +24,7 @@ public class JDBCTests {
 	public void testConnection() {
 		try(Connection con =
 				DriverManager.getConnection(
-							"jdbc:mysql://localhost:3306/test",
+							"jdbc:mysql://localhost:3306/spring_web_site",
 							"root",
 							"0000")){
 			log.info(con);;

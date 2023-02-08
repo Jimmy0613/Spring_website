@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cre.mapper.BoardMapper">
+	<select id="list" resultType="com.cre.domain.BoardVO">
+		SELECT * from board order by post_num desc limit #{startIndex}, 10
+	</select>
+	<select id="read" resultType="com.cre.domain.BoardVO">
+		SELECT * from board where post_num
+		= #{post_num}
+	</select>
+	<update id="delete">
+		DELETE from board where post_num = #{post_num}
+	</update>
+	<update id="edit">
+		UPDATE board set title=#{title}, content=#{content}
+		where post_num=#{post_num}
+	</update>
+	<insert id="write">
+		INSERT into board(writer, writer_id, title, content)
+		values(#{writer},#{writer_id},#{title},#{content})
+	</insert>
+	<select id="page" resultType="com.cre.domain.PageVO">
+		SELECT count(*) as count from board
+	</select>
+</mapper>
