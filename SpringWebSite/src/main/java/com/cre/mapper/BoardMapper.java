@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.cre.domain.BoardVO;
-import com.cre.domain.MemberVO;
 import com.cre.domain.PageVO;
 import com.cre.domain.ReplyVO;
 
@@ -13,6 +12,10 @@ public interface BoardMapper {
 	public List<BoardVO> listBoard(@Param("startIndex") int startIndex, @Param("category") String category);
 
 	public List<BoardVO> listPopular();
+
+	public List<BoardVO> homeNotice();
+
+	public List<BoardVO> homePopular();
 
 	public BoardVO read(Long post_num);
 

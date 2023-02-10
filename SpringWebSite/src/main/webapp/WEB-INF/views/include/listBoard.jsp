@@ -87,7 +87,7 @@
 	</div>
 	<!-- 페이징 부분 -->
 	<div class="page">
-		<%@ include file="/WEB-INF/views/include/pageBoard.jsp"%>
+		<%@ include file="/WEB-INF/views/include/page/pageBoard.jsp"%>
 	</div>
 	<div>
 		<%

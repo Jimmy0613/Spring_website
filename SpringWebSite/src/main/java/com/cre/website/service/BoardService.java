@@ -3,14 +3,18 @@ package com.cre.website.service;
 import java.util.List;
 
 import com.cre.domain.BoardVO;
-import com.cre.domain.MemberVO;
 import com.cre.domain.PageVO;
 import com.cre.domain.ReplyVO;
 
 public interface BoardService {
+
 	public List<BoardVO> listBoard(int startIndex, String category);
 
 	public List<BoardVO> listPopular();
+
+	public List<BoardVO> homeNotice();
+
+	public List<BoardVO> homePopular();
 
 	public PageVO page(String category);
 
@@ -21,7 +25,7 @@ public interface BoardService {
 	public BoardVO read(Long post_num);
 
 	public void heart(Long post_num, String writer_id, String member_id);
-	
+
 	public List<ReplyVO> listReply(Long post_num);
 
 	public void reply(ReplyVO rvo);

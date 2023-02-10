@@ -70,14 +70,12 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 			}
 			%>
 			<div class="post">
-				<div style="font-size: 1.3em; font-weight: bolder; color: black;"><%=cgk %>
+				<div style="font-size: 1.3em; font-weight: bolder; color: black;"><%=cgk%>
 				</div>
 				<br>
 				<%
 				MemberVO loginMember = (MemberVO) request.getAttribute("loginMember");
 				BoardVO read = (BoardVO) request.getAttribute("read");
-				List<ReplyVO> reply = (List<ReplyVO>) request.getAttribute("reply");
-				
 				int currentPage = (Integer) request.getAttribute("currentPage");
 				Long post_num = read.getPost_num();
 				%>
@@ -99,9 +97,11 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 					if (loginMember != null && (!loginMember.getMember_id().equals(read.getWriter_id()))) {
 					%>
 						<form action="/board/heart" method="get">
-							<input type="hidden" name='post_num' value="<%=read.getPost_num()%>">
-							<input type="hidden" name='writer_id' value="<%=read.getWriter_id()%>">
-							<input type="hidden" name='member_id' value="<%=loginMember.getMember_id() %>">
+							<input type="hidden" name='post_num'
+								value="<%=read.getPost_num()%>"> <input type="hidden"
+								name='writer_id' value="<%=read.getWriter_id()%>"> <input
+								type="hidden" name='member_id'
+								value="<%=loginMember.getMember_id()%>">
 							<button id="heartBtn" type="submit">❤</button>
 						</form>
 						<%
@@ -111,6 +111,7 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 					<hr style="height: 0.1px; width: 95%;">
 					<div id="p" style="color: black; font-size: 0.9em;">
 						<%
+						List<ReplyVO> reply = (List<ReplyVO>) request.getAttribute("reply");
 						if (reply.size() != 0) {
 
 							for (ReplyVO r : reply) {
@@ -125,11 +126,11 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 							%>
 							<form id="delReply" method="get" action="/board/delReply"
 								encType="UTF-8">
-								<input type="hidden" name='writer_id' value="<%=r.getWriter_id() %>">
-								<input type="hidden" name='post_num'
-									value="<%=r.getPost_num()%>"> <input type="hidden"
-									name='reply_num' value="<%=r.getReply_num()%>"> <a
-									type="submit"
+								<input type="hidden" name='writer_id'
+									value="<%=r.getWriter_id()%>"> <input type="hidden"
+									name='post_num' value="<%=r.getPost_num()%>"> <input
+									type="hidden" name='reply_num' value="<%=r.getReply_num()%>">
+								<a type="submit"
 									onclick="document.getElementById('delReply').submit();">(x)</a>
 							</form>
 							<%
@@ -152,11 +153,13 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 								reWriter = "익명";
 						%>
 						<form class="reply" action="/board/reply" method="post">
-							<input type="hidden" value="<%=post_num%>" name='post_num'>
-							<input type="hidden" value="<%=loginMember.getMember_id()%>"
+							<input type="hidden" value="<%=read.getCategory()%>"
+								name='category'> <input type="hidden"
+								value="<%=post_num%>" name='post_num'> <input
+								type="hidden" value="<%=loginMember.getMember_id()%>"
 								name='writer_id'> <input type="hidden"
-								value="<%=reWriter%>" name='writer'>
-							<input name='content' placeholder=" (댓글 작성)">
+								value="<%=reWriter%>" name='writer'> <input
+								name='content' placeholder=" (댓글 작성)">
 							<button type="submit">등록</button>
 						</form>
 						<%

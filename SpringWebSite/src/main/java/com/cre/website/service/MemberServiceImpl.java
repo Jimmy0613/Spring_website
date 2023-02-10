@@ -5,7 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cre.domain.BoardVO;
 import com.cre.domain.MemberVO;
+import com.cre.domain.PageVO;
+import com.cre.domain.ReplyVO;
 import com.cre.mapper.MemberMapper;
 
 import lombok.Setter;
@@ -71,6 +74,26 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public List<MemberVO> memberList() {
 		return mapper.memberList();
+	}
+
+	@Override
+	public List<BoardVO> myPost(String member_id, int startIndex) {
+		return mapper.myPost(member_id, startIndex);
+	}
+
+	@Override
+	public List<ReplyVO> myReply(String member_id, int startIndex) {
+		return mapper.myReply(member_id, startIndex);
+	}
+
+	@Override
+	public PageVO page(String member_id) {
+		return mapper.page(member_id);
+	}
+
+	@Override
+	public PageVO page2(String member_id) {
+		return mapper.page(member_id);
 	}
 
 	@Override

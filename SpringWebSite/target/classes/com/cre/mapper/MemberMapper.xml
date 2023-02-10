@@ -6,10 +6,37 @@
 		SELECT * from members
 	</select>
 	<select id="getMember" resultType="com.cre.domain.MemberVO">
-		SELECT * from members where member_id = #{member_id}
+		SELECT * from members where
+		member_id = #{member_id}
 	</select>
 	<insert id="join">
-		INSERT into members (member_id, password, member_name, email) values
-		(#{member_id}, #{password}, #{member_name}, #{email})
+		INSERT into members (member_id, password,
+		member_name, email) values
+		(#{member_id}, #{password}, #{member_name},
+		#{email})
 	</insert>
+	<select id="myPost" resultType="com.cre.domain.BoardVO"
+		parameterType="map">
+		SELECT * from board where
+		writer_id=#{member_id}
+		order by
+		post_num desc limit #{startIndex}, 10
+	</select>
+	<select id="myReply" resultType="com.cre.domain.ReplyVO"
+		parameterType="map">
+		SELECT * from reply
+		where writer_id=#{member_id}
+		order by
+		reply_num desc limit #{startIndex}, 10
+	</select>
+	<select id="page" resultType="com.cre.domain.PageVO">
+		SELECT count(*) as count from board
+		where
+		writer_id=#{member_id}
+	</select>
+	<select id="page2" resultType="com.cre.domain.PageVO">
+		SELECT count(*) as count from reply
+		where
+		writer_id=#{member_id}
+	</select>
 </mapper>

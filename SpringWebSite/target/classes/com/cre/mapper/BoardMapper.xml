@@ -2,6 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cre.mapper.BoardMapper">
+	<select id="homeNotice" resultType="com.cre.domain.BoardVO">
+		SELECT * from board where category='notice' limit 0, 4
+	</select>
+	<select id="homePopular" resultType ="com.cre.domain.BoardVO">
+		SELECT * from board
+		where(category='general' or category='anonym')
+		order by heart_count desc,
+		view_count desc limit 0, 5
+	</select>
 	<select id="listBoard" parameterType="map"
 		resultType="com.cre.domain.BoardVO">
 		SELECT * from board where category=#{category}
@@ -26,6 +35,7 @@
 	</update>
 	<update id="delete">
 		DELETE from board where post_num = #{post_num};
+		DELETE from reply where post_num = #{post_num};
 		UPDATE members set post_count = post_count - 1 where member_id = #{writer_id};
 		UPDATE members set heart_count = heart_count - 3 where member_id= #{writer_id};
 	</update>

@@ -6,6 +6,7 @@ import lombok.Data;
 public class ReplyVO {
 	private Long reply_num;
 	private Long post_num;
+	private String category;
 	private String writer;
 	private String writer_id;
 	private String content;

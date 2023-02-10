@@ -32,7 +32,7 @@ public class BoardController {
 	HttpSession session;
 
 	@GetMapping("/list")
-	public void list(@RequestParam(value = "category", defaultValue = "popular") String category,
+	public String list(@RequestParam(value = "category", defaultValue = "popular") String category,
 			@RequestParam(value = "currentPage", defaultValue = "1") int currentPage, HttpServletRequest request,
 			Model model) {
 		session = request.getSession();
@@ -40,24 +40,31 @@ public class BoardController {
 			model.addAttribute("list", service.listPopular());
 		} else {
 			model.addAttribute("page", service.page(category));
-			log.info("페이지 계산함");
 			int startIndex = (currentPage - 1) * PageVO.PER_PAGE;
 			model.addAttribute("list", service.listBoard(startIndex, category));
 		}
 		model.addAttribute("loginMember", session.getAttribute("loginMember"));
 		model.addAttribute("category", category);
 		model.addAttribute("currentPage", currentPage);
-		log.info("글 목록 가져옴");
+		return "board/list";
 	}
 
-	@GetMapping({ "/read", "/edit" })
-	public void read(HttpServletRequest request, @RequestParam("post_num") Long post_num, Model model) {
+	@GetMapping(path = { "/read", "/edit" })
+	public String read(HttpServletRequest request, @RequestParam(value = "category", defaultValue = "") String category,
+			@RequestParam(value = "currentPage", defaultValue = "1") int currentPage,
+			@RequestParam("post_num") Long post_num, Model model) {
 		session = request.getSession();
+		String path = request.getServletPath();
+		if(service.read(post_num)==null)
+			return "redirect:/board/list";
+		if (!category.equals(""))
+			model.addAttribute("category", category);
+		model.addAttribute("currentPage", currentPage);
 		model.addAttribute("loginMember", session.getAttribute("loginMember"));
 		service.view(post_num);
 		model.addAttribute("read", service.read(post_num));
 		model.addAttribute("reply", service.listReply(post_num));
-		log.info("글 가져옴");
+		return path;
 	}
 
 	@GetMapping("/heart")

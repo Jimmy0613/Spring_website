@@ -1,5 +1,8 @@
 package com.cre.website;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +13,8 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
 import com.cre.domain.MemberVO;
+import com.cre.domain.PageVO;
+import com.cre.website.service.BoardService;
 import com.cre.website.service.MemberService;
 
 import lombok.AllArgsConstructor;
@@ -24,9 +29,32 @@ public class MemberController {
 
 	private MemberService service;
 
+	@GetMapping("/myPost")
+	public void myPost(@RequestParam(value = "currentPage", defaultValue = "1") int currentPage,
+			HttpServletRequest request, Model model) {
+		HttpSession session = request.getSession();
+		MemberVO loginMember = (MemberVO) session.getAttribute("loginMember");
+		model.addAttribute("page", service.page(loginMember.getMember_id()));
+		model.addAttribute("currentPage", currentPage);
+		int startIndex = (currentPage - 1) * PageVO.PER_PAGE;
+		String member_id = loginMember.getMember_id();
+		model.addAttribute("myPost", service.myPost(member_id, startIndex));
+	}
+
+	@GetMapping("/myReply")
+	public void myReply(@RequestParam(value="currentPage", defaultValue="1") int currentPage,
+			HttpServletRequest request, Model model) {
+		HttpSession session = request.getSession();
+		MemberVO loginMember = (MemberVO) session.getAttribute("loginMember");
+		model.addAttribute("page", service.page2(loginMember.getMember_id()));
+		model.addAttribute("currentPage", currentPage);
+		int startIndex = (currentPage -1) * PageVO.PER_PAGE;
+		String member_id = loginMember.getMember_id();
+		model.addAttribute("myReply", service.myReply(member_id, startIndex));
+	}
+	
 	@GetMapping("/join")
 	public void join() {
-		log.info("가입하기 화면");
 	}
 
 	@PostMapping("/join")
@@ -37,7 +65,6 @@ public class MemberController {
 
 	@GetMapping("/login")
 	public void login() {
-		log.info("로그인 화면");
 	}
 
 	@PostMapping("/login")
@@ -47,14 +74,11 @@ public class MemberController {
 			// session.setAttribute("loginMember", member);
 			// model.addAttribute를 하면 session에도 자동으로 저장됨.
 			model.addAttribute("loginMember", member);
-			log.info("로그인 성공");
-		} else {
-			log.info("로그인 실패");
 		}
 		return "redirect:" + location;
 	}
 
-	@PostMapping("/logout")
+	@GetMapping("/logout")
 	public String logout(SessionStatus status, @RequestParam("location") String location) {
 		// session초기화(@SessionAttributes 로 가져온 값은 이걸로만 지울 수 있음)
 		// session.removeAttribute로는 지울 수 없음.

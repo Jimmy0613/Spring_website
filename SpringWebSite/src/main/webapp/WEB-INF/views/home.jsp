@@ -1,10 +1,11 @@
+<%@page import="com.cre.domain.BoardVO"%>
+<%@page import="java.util.List"%>
 <%@page import="javax.websocket.Session"%>
 <%@page import="com.cre.domain.MemberVO"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Date"%>
 <%@page import="java.io.File"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ page session="false"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -26,7 +27,7 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 </head>
 <body>
 	<%
-	MemberVO loginMember = (MemberVO) request.getAttribute("loginMember");
+	MemberVO loginMember = (MemberVO) session.getAttribute("loginMember");
 	%>
 	<div class="container">
 		<div class="header">
@@ -59,8 +60,8 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 							<%=loginMember.getHeart_count()%>
 							개
 						</div>
-						<button id="memberinfo">회원정보</button>
-						<form id="logout" action="/member/logout" method="post">
+						<button id="memberinfo" onclick="location.href='/member/myPost'">회원정보</button>
+						<form id="logout" action="/member/logout" method="get">
 							<input type="hidden" name="location" value="/">
 							<button type="submit">로그아웃</button>
 						</form>
@@ -105,6 +106,7 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 				}
 				%> --%>
 			</div>
+
 			<div class="notice">
 				<p style="margin: 10px;">
 					공지사항 <a href="/board/list?category=notice"
@@ -112,16 +114,21 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 				</p>
 				<div id="notice">
 					<%
-					/* Board board = new Board();
-					ArrayList<PostDTO> notice = board.homeNotice();
-					for (PostDTO p : notice) { */
+					List<BoardVO> notice = (List<BoardVO>) request.getAttribute("homeNotice");
+					for (BoardVO b : notice) {
+						String title = "";
+						if (b.getTitle().length() > 16) {
+							title = b.getTitle().substring(0, 16) + "...";
+						} else {
+							title = b.getTitle();
+						}
 					%>
 					<div id="n">
-						[ 운영자 ] <a>공지</a>
+						[ 운영자 ] <a href="/board/read?post_num=<%=b.getPost_num()%>&category=notice&currentPage=1"><%=title%></a>
 						<hr>
 					</div>
 					<%
-					/* } */
+					}
 					%>
 				</div>
 			</div>
@@ -130,36 +137,33 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 					인기글 <a href="/board/list" style="font-size: 0.8em;">더보기</a>
 				</p>
 				<div id="hot">
-					<%-- <%
-					ArrayList<PostDTO> popular = board.homePopular();
-					for (PostDTO p : popular) {
-						String cgp = board.switchCategory(p.getCategory());
+					<%
+					List<BoardVO> popular = (List<BoardVO>) request.getAttribute("homePopular");
+					for (BoardVO b : popular) {
+						String cgk = "자유";
+						if (b.getCategory().equals("anonym"))
+							cgk = "익명";
 						String title = "";
-						if (p.getTitle().length() > 16) {
-							title = p.getTitle().substring(0, 16) + "...";
+						if (b.getTitle().length() > 16) {
+							title = b.getTitle().substring(0, 16) + "...";
 						} else {
-							title = p.getTitle();
+							title = b.getTitle();
 						}
-					%> --%>
+						if (b.getReply_count() > 0)
+							title = title + " (" + b.getReply_count() + ")";
+						title = title + "   (❤" + b.getHeart_count() + ")";
+					%>
 					<div id="n">
 						[
-						<%-- <%=cgp%> --%>
-						] <a>제목 </a>
-						<%-- <%
-						if (p.getReply() > 0) {
-						%>
-						(<%=p.getReply()%>)
-						<%
-						}
-						%> --%>
-						&nbsp;&nbsp; (❤
-						<%-- <%=p.getHeart()%> --%>
-						)
+						<%=cgk%>
+						] <a
+							href="/board/read?post_num=<%=b.getPost_num()%>&category=popular&currentPage=1"><%=title%>
+						</a>
 						<hr>
 					</div>
-					<%-- <%
+					<%
 					}
-					%> --%>
+					%>
 				</div>
 			</div>
 			<div class="game">
