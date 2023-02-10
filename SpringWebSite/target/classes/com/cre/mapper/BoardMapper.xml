@@ -2,25 +2,80 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cre.mapper.BoardMapper">
-	<select id="list" resultType="com.cre.domain.BoardVO">
-		SELECT * from board order by post_num desc limit #{startIndex}, 10
+	<select id="listBoard" parameterType="map"
+		resultType="com.cre.domain.BoardVO">
+		SELECT * from board where category=#{category}
+		order by
+		post_num desc limit #{startIndex}, 10
 	</select>
+	<select id="listPopular" resultType="com.cre.domain.BoardVO">
+		SELECT * from board
+		where(category = 'general' or category = 'anonym')
+		order by heart_count
+		desc, view_count desc limit 0, 10
+	</select>
+	<insert id="write">
+		INSERT into board(category, writer, writer_id, title,
+		content)
+		values(#{category},
+		#{writer},#{writer_id},#{title},#{content})
+	</insert>
+	<update id="postPlus">
+		UPDATE members set post_count = post_count + 1 where member_id = #{writer_id};
+		UPDATE members set heart_count = heart_count + 3 where member_id= #{writer_id};
+	</update>
+	<update id="delete">
+		DELETE from board where post_num = #{post_num};
+		UPDATE members set post_count = post_count - 1 where member_id = #{writer_id};
+		UPDATE members set heart_count = heart_count - 3 where member_id= #{writer_id};
+	</update>
+	
 	<select id="read" resultType="com.cre.domain.BoardVO">
 		SELECT * from board where post_num
 		= #{post_num}
 	</select>
-	<update id="delete">
-		DELETE from board where post_num = #{post_num}
+	<update id="heart" parameterType="map">
+		UPDATE board set heart_count = heart_count + 1 where post_num = #{post_num};
+		UPDATE members set heart_count = heart_count + 1 where member_id = #{writer_id};
+		UPDATE members set heart_count = heart_count - 1 where member_id = #{member_id};
+	</update>
+	<select id="listReply" resultType="com.cre.domain.ReplyVO">
+		SELECT * from reply where
+		post_num = #{post_num}
+	</select>
+	<insert id="reply">
+		INSERT into reply (post_num, writer, writer_id,
+		content) values(#{post_num}, #{writer}, #{writer_id}, #{content})
+	</insert>
+	<!-- 한번에 sql문 여러개 쓰려면 root-context.xml에서 db url db명 뒤에 ?allowMultiQueries=true를 붙여줘야함.
+	<property name="url" value="jdbc:log4jdbc:mysql://localhost:3306/spring_web_site?allowMultiQueries=true"></property>
+	이렇게 수정하고 프로젝트 우클릭해서 run as-> maven install 하고 다시 우클릭해서 maven-> project update하고나서 실행해야함 -->
+	<update id="rePlus">
+		UPDATE board set reply_count = reply_count + 1 where
+		post_num = #{post_num};
+		UPDATE members set reply_count = reply_count +
+		1 where member_id = #{writer_id};
+		UPDATE members set heart_count = heart_count + 1 where member_id= #{writer_id};
+	</update>
+	<update id="view">
+		UPDATE board set view_count = view_count + 1 where
+		post_num = #{post_num}
+	</update>
+	<update id="delReply">
+		DELETE from reply where reply_num = #{reply_num};
+		UPDATE board set reply_count = reply_count - 1 where
+		post_num = #{post_num};
+		UPDATE members set reply_count = reply_count - 1 where member_id =
+		#{writer_id};
+		UPDATE members set heart_count = heart_count - 1 where member_id= #{writer_id};
 	</update>
 	<update id="edit">
 		UPDATE board set title=#{title}, content=#{content}
 		where post_num=#{post_num}
 	</update>
-	<insert id="write">
-		INSERT into board(writer, writer_id, title, content)
-		values(#{writer},#{writer_id},#{title},#{content})
-	</insert>
-	<select id="page" resultType="com.cre.domain.PageVO">
-		SELECT count(*) as count from board
+	<select id="page" parameterType="map"
+		resultType="com.cre.domain.PageVO">
+		SELECT count(*) as count from board where
+		category=#{category}
 	</select>
 </mapper>

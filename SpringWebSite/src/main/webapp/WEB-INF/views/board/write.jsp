@@ -31,15 +31,34 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 		</div>
 		<div class="content">
 			<div class="menu_left">
-				<%-- <%@ include file="/include/menuLeft.jsp"%> --%>
+				<%@ include file="/WEB-INF/views/include/menuLeft.jsp"%>
 			</div>
 			<div class="write">
-				<span style="font-size: 1.2em;">글쓰기</span>
+				<%
+				MemberVO loginMember = (MemberVO) request.getAttribute("loginMember");
+				String cgw = (String) request.getAttribute("category");
+				String cgk = "자유게시판";
+				switch (cgw) {
+				case "anonym":
+					cgk = "익명게시판";
+					break;
+				case "notice":
+					cgk = "공지사항";
+					break;
+				case "report":
+					cgk = "신고하기";
+					break;
+				}
+				String writer = loginMember.getMember_name();
+				if(cgw.equals("anonym")){
+					writer = "익명";
+				}
+				%>
+				<span style="font-size: 1.3em;"><%=cgk %></span>
 				<form action="/board/write" method="post">
-					<%-- <input type="hidden" name="category" value="<%=category%>"> --%> <br>
-					<input type="hidden" name='writer_id' value="tester">
-					<input id="title" placeholder="제목" name='title'> 
-					<input id="writer" placeholder="작성자" name='writer'><br>
+					<br> <input type="hidden" name='writer_id' value="<%=loginMember.getMember_id()%>">
+					<input id="title" placeholder="제목" name='title'> <input
+						id="writer" value="<%=writer %>" name='writer' readonly><br>
 					<textarea id="content" placeholder="내용" name='content'></textarea>
 					<button id="write_button" type="submit">글쓰기</button>
 				</form>

@@ -1,3 +1,5 @@
+<%@page import="com.cre.domain.ReplyVO"%>
+<%@page import="java.util.List"%>
 <%@page import="com.cre.domain.BoardVO"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Date"%>
@@ -50,14 +52,33 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 		</div>
 		<div class="content">
 			<div class="menu_left">
-				<%-- <%@ include file="/include/menuLeft.jsp"%> --%>
+				<%@ include file="/WEB-INF/views/include/menuLeft.jsp"%>
 			</div>
+			<%
+			String category = (String) request.getAttribute("category");
+			String cgk = "자유게시판";
+			switch (category) {
+			case "anonym":
+				cgk = "익명게시판";
+				break;
+			case "notice":
+				cgk = "공지사항";
+				break;
+			case "report":
+				cgk = "신고하기";
+				break;
+			}
+			%>
 			<div class="post">
-				<div style="font-size: 1.2em; font-weight: bolder; color: black;">게시판
+				<div style="font-size: 1.3em; font-weight: bolder; color: black;"><%=cgk %>
 				</div>
 				<br>
 				<%
+				MemberVO loginMember = (MemberVO) request.getAttribute("loginMember");
 				BoardVO read = (BoardVO) request.getAttribute("read");
+				List<ReplyVO> reply = (List<ReplyVO>) request.getAttribute("reply");
+				
+				int currentPage = (Integer) request.getAttribute("currentPage");
 				Long post_num = read.getPost_num();
 				%>
 				<div class="p">
@@ -74,85 +95,88 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 						댓글
 						<%=read.getReply_count()%>개 | 하트
 						<%=read.getHeart_count()%>개
-						<%-- <%
-					if (loginMember != null) {
+						<%
+					if (loginMember != null && (!loginMember.getMember_id().equals(read.getWriter_id()))) {
 					%>
-						<form action="/board/heart">
-							<input type="hidden" name="postNum" value="<%=post.getpNum()%>">
-							<input type="hidden" name="category" value="<%=category%>">
-							<input type="hidden" name="page" value="<%=currentPage%>">
+						<form action="/board/heart" method="get">
+							<input type="hidden" name='post_num' value="<%=read.getPost_num()%>">
+							<input type="hidden" name='writer_id' value="<%=read.getWriter_id()%>">
+							<input type="hidden" name='member_id' value="<%=loginMember.getMember_id() %>">
 							<button id="heartBtn" type="submit">❤</button>
 						</form>
 						<%
 						}
-						%> --%>
+						%>
 					</div>
 					<hr style="height: 0.1px; width: 95%;">
 					<div id="p" style="color: black; font-size: 0.9em;">
-						<%-- <%
+						<%
 						if (reply.size() != 0) {
 
-							for (ReplyDTO r : reply) {
-						%> --%>
-						<!-- <div id="reply"> -->
-							<%-- <%
-							if (category.equals("anonym")) {
-							%>
-							익명:
-							<%
-							} else {
-							%>
+							for (ReplyVO r : reply) {
+						%>
+						<div id="reply">
 							<%=r.getWriter()%>:
-							<%
-							}
-							%>
 							<%=r.getContent()%>
-							(<%=r.getrDate()%>)
+							(<%=r.getReply_date()%>)
 							<%
 							if (loginMember != null) {
-								if (r.getWriter().equals(loginMember.getName())) {
-									String formId = "form" + r.getrNum();
+								if (r.getWriter().equals(loginMember.getMember_name())) {
 							%>
-							<form id="<%=formId%>" method="get" action="/board/delReply"
+							<form id="delReply" method="get" action="/board/delReply"
 								encType="UTF-8">
-								<input type="hidden" name="postNum" value="<%=postNum%>">
-								<input type="hidden" name="reNum" value="<%=r.getrNum()%>">
-								<input type="hidden" name="category" value="<%=category%>">
-								<input type="hidden" name="page" value="<%=currentPage%>">
-								<a type="submit" onclick="document.getElementById('<%=formId%>').submit();">(x)</a>
+								<input type="hidden" name='writer_id' value="<%=r.getWriter_id() %>">
+								<input type="hidden" name='post_num'
+									value="<%=r.getPost_num()%>"> <input type="hidden"
+									name='reply_num' value="<%=r.getReply_num()%>"> <a
+									type="submit"
+									onclick="document.getElementById('delReply').submit();">(x)</a>
 							</form>
 							<%
 							}
 							}
-							%> --%>
-						<%-- </div>
+							%>
+						</div>
 						<%
 						}
 						} else {
-						%> --%>
-						<div id="reply">아직 댓글이 없습니다.</div>
-						<%-- <%
-						}
-						%> --%>
-						<%-- <%
-						if (loginMember != null) {
 						%>
-						<form class="reply" action="/board/reply">
-							<input type="hidden" value="<%=postNum%>" name="postNum">
-							<input type="hidden" value="<%=category%>" name="category">
-							<input type="hidden" value="<%=currentPage%>" name="page">
-							<input name="conReply" placeholder=" (댓글 작성)">
+						<div id="reply">아직 댓글이 없습니다.</div>
+						<%
+						}
+						%>
+						<%
+						if (loginMember != null) {
+							String reWriter = loginMember.getMember_name();
+							if (category.equals("anonym"))
+								reWriter = "익명";
+						%>
+						<form class="reply" action="/board/reply" method="post">
+							<input type="hidden" value="<%=post_num%>" name='post_num'>
+							<input type="hidden" value="<%=loginMember.getMember_id()%>"
+								name='writer_id'> <input type="hidden"
+								value="<%=reWriter%>" name='writer'>
+							<input name='content' placeholder=" (댓글 작성)">
 							<button type="submit">등록</button>
 						</form>
 						<%
 						}
-						%> --%>
+						%>
 					</div>
 				</div>
 				<div id="edl">
+					<%
+					if (loginMember != null) {
+						if (loginMember.getMember_id().equals(read.getWriter_id())) {
+					%>
 					<button
 						onclick="location.href='/board/edit?post_num=<%=post_num%>'">수정</button>
-					<button onclick="location.href='/board/delete?post_num=<%=post_num%>'">삭제</button>
+					<button
+						onclick="location.href='/board/delete?post_num=<%=post_num%>&writer_id=<%=read.getWriter_id()%>'">삭제</button>
+					<%
+					}
+					}
+					%>
 					<%-- <form name="formDelete"	encType="UTF-8">
 						<input type="hidden" name="postNum" value="<%=postNum%>">
 						<input type="hidden" name="category" value="<%=category%>">
@@ -161,7 +185,7 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 					</form>
 					 --%>
 					<button
-						onclick="location.href='/board/list'">목록</button>
+						onclick="location.href='/board/list?category=<%=category%>&currentPage=<%=currentPage%>'">목록</button>
 				</div>
 			</div>
 		</div>

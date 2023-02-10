@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cre.mapper.BoardMapper">
+	<select id="listBoard" parameterType="map" resultType="com.cre.domain.BoardVO">
+		SELECT * from board where category=#{category}
+		order by post_num desc limit #{startIndex}, 10
+	</select>
+	<select id="listPopular" resultType="com.cre.domain.BoardVO">
+		SELECT * from board
+		where(category = 'general' or category = 'anonym')
+		order by heart_count desc, view_count desc limit 0, 10
+	</select>
+	<select id="read" resultType="com.cre.domain.BoardVO">
+		SELECT * from board where post_num
+		= #{post_num}
+	</select>
+	<select id="listReply" resultType="com.cre.domain.ReplyVO">
+		SELECT * from reply where post_num = #{post_num}
+	</select>
+	<insert id="reply">
+		INSERT into reply (post_num, writer, writer_id, content) values(#{post_num}, #{writer}, #{writer_id}, #{content})
+	</insert>
+	<update id="rePlus">
+		UPDATE board set reply_count = reply_count + 1 where post_num = #{post_num}
+	</update>
+	<update id="view">
+		UPDATE board set view_count = view_count + 1 where post_num = #{post_num}
+	</update>
+	<update id="delete">
+		DELETE from board where post_num = #{post_num}
+	</update>
+	<update id="delReply">
+		DELETE from reply where reply_num = #{reply_num}
+	</update>
+	<update id="reMinus">
+		UPDATE board set reply_count = reply_count - 1 where post_num = #{post_num}
+	</update>
+	<update id="edit">
+		UPDATE board set title=#{title}, content=#{content}
+		where post_num=#{post_num}
+	</update>
+	<insert id="write">
+		INSERT into board(category, writer, writer_id, title,
+		content)
+		values(#{category},
+		#{writer},#{writer_id},#{title},#{content})
+	</insert>
+	<select id="page" parameterType="map" resultType="com.cre.domain.PageVO">
+		SELECT count(*) as count from board where category=#{category}
+	</select>
+</mapper>

@@ -3,8 +3,8 @@
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Date"%>
 <%@page import="java.io.File"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page session="false" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ page session="false"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -26,7 +26,7 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 </head>
 <body>
 	<%
-	MemberVO loginMember = (MemberVO)request.getAttribute("loginMember");
+	MemberVO loginMember = (MemberVO) request.getAttribute("loginMember");
 	%>
 	<div class="container">
 		<div class="header">
@@ -39,7 +39,7 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 			<div class="member_info">
 				<p style="margin: 10px;">내 정보</p>
 				<%
-				if (loginMember==null) {
+				if (loginMember == null) {
 				%>
 				<div style="padding: 20px;">
 					<span style="color: grey;">로그인이 필요합니다.</span> <br> <br> <a
@@ -54,11 +54,14 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 					style="align-items: center; justify-content: center;">
 					<div id="f">
 						<div style="grid-column-start: 1; grid-column-end: 3;">
-							<%=loginMember.getInfo()%><br> <b style="color:red;">❤</b> : <%=loginMember.getHeart_count()%> 개
+							<%=loginMember.getInfo()%><br> <b style="color: red;">❤</b>
+							:
+							<%=loginMember.getHeart_count()%>
+							개
 						</div>
 						<button id="memberinfo">회원정보</button>
-						<form id="logout">
-							<input type="hidden" name="location" value="/index.jsp">
+						<form id="logout" action="/member/logout" method="post">
+							<input type="hidden" name="location" value="/">
 							<button type="submit">로그아웃</button>
 						</form>
 					</div>
@@ -69,8 +72,8 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 			</div>
 			<div class="rps">
 				<p style="margin: 10px;">
-				<span>하트 걸고 가위바위보?!<img src="/img/questionmark.jpg" style="width:25px; vertical-align:center;" title="이기면 +2, 지면 -1, 비기면 0!"></span><br>
-				<span style="font-size:0.7em;">가위 바위 보 글자를 클릭하면 바로 도전!</span><br>
+					<span>하트 걸고 가위바위보?!<!-- <img src="/img/questionmark.jpg" style="width:25px; vertical-align:center;" title="이기면 +2, 지면 -1, 비기면 0!"> --></span><br>
+					<span style="font-size: 0.7em;">가위 바위 보 글자를 클릭하면 바로 도전!</span><br>
 				</p>
 				<%-- <%
 				if (true) {
@@ -104,7 +107,8 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 			</div>
 			<div class="notice">
 				<p style="margin: 10px;">
-					공지사항 <a href="/board/board?category=notice" style="font-size: 0.8em;">더보기</a>
+					공지사항 <a href="/board/list?category=notice"
+						style="font-size: 0.8em;">더보기</a>
 				</p>
 				<div id="notice">
 					<%
@@ -113,8 +117,7 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 					for (PostDTO p : notice) { */
 					%>
 					<div id="n">
-						[ 운영자 ] <a
-							>공지</a>
+						[ 운영자 ] <a>공지</a>
 						<hr>
 					</div>
 					<%
@@ -124,7 +127,7 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 			</div>
 			<div class="hot">
 				<p style="margin: 10px;">
-					인기글 <a href="/board/board" style="font-size: 0.8em;">더보기</a>
+					인기글 <a href="/board/list" style="font-size: 0.8em;">더보기</a>
 				</p>
 				<div id="hot">
 					<%-- <%
@@ -150,7 +153,8 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 						}
 						%> --%>
 						&nbsp;&nbsp; (❤
-						<%-- <%=p.getHeart()%> --%>)
+						<%-- <%=p.getHeart()%> --%>
+						)
 						<hr>
 					</div>
 					<%-- <%
