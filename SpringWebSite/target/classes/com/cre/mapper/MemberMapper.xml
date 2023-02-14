@@ -29,14 +29,28 @@
 		order by
 		reply_num desc limit #{startIndex}, 10
 	</select>
+	<update id="myEmail">
+		UPDATE members set email = #{email} where
+		member_id=#{member_id}
+	</update>
 	<select id="page" resultType="com.cre.domain.PageVO">
 		SELECT count(*) as count from board
 		where
 		writer_id=#{member_id}
 	</select>
 	<select id="page2" resultType="com.cre.domain.PageVO">
-		SELECT count(*) as count from reply
+		SELECT count(*) as count from
+		reply
 		where
 		writer_id=#{member_id}
 	</select>
+	<select id="rpsCount" resultType="Integer">
+		SELECT count(*) from rps_log
+		where date=#{today} and
+		member_id=#{member_id}
+	</select>
+	<insert id="rps" parameterType="map">
+		INSERT into rps_log (member_id, result)
+		values(#{member_id}, #{result})
+	</insert>
 </mapper>

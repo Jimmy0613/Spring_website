@@ -30,7 +30,7 @@
 				<span><%=member.getInfo()%> </span> <span
 					style="text-align: center;"><b style="color:red;">❤</b> : <%=member.getHeart_count()%>개</span>
 				<div id="f">
-					<button id="memberinfo" onclick="location.href='/member/myPost'">회원정보</button>
+					<button id="memberinfo" onclick="location.href='/member/myPage?mode=post'">회원정보</button>
 					<form id="logout" action="/member/logout" method="get">
 						<input type="hidden" name="location" value="/board/list">
 						<button type="submit">로그아웃</button>

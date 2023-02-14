@@ -9,19 +9,25 @@ import com.cre.domain.ReplyVO;
 
 public interface MemberService {
 
-	public void memberJoin(MemberVO mvo, String pwCheck);
+	public String memberJoin(MemberVO mvo, String pwCheck);
 
 	public List<MemberVO> memberList();
 
 	public MemberVO getMember(String member_id);
 
-	public MemberVO memberLogin(MemberVO mvo);
+	public String memberLogin(MemberVO mvo);
 
 	public List<BoardVO> myPost(String member_id, int startIndex);
 
 	public List<ReplyVO> myReply(String member_id, int startIndex);
 
+	public void myEmail(MemberVO mvo);
+
 	public PageVO page(String member_id);
 
 	public PageVO page2(String member_id);
+
+	public int getTodayCount(String today, String member_id);
+	
+	public void rps(String member_id, String result);
 }

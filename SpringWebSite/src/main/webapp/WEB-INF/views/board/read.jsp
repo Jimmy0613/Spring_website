@@ -12,24 +12,6 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<!-- <script type="text/javascript">
-	function del_confirm() {
-		var ok = confirm("정말 삭제하시겠습니까?");
-		var formDelete = document.formDelete;
-		var postNum = formDelete.postNum.value;
-		var page = formDelete.page.value;
-		var category = formDelete.category.value;
-		if (ok) {
-			formDelete.method = "get";
-			formDelete.action = "/board/delete";
-			formDelete.submit();
-		} else {
-			location.href = "/board/read?postNum=" + postNum + "&page="
-					+ category + "&category=" + category;
-		}
-	}
-</script> -->
-
 <%
 /* CSS/JS 파일 캐시 방지 */
 String styleCss = application.getRealPath("/resources/css/board.css");
@@ -55,8 +37,12 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 				<%@ include file="/WEB-INF/views/include/menuLeft.jsp"%>
 			</div>
 			<%
-			String category = (String) request.getAttribute("category");
 			String cgk = "자유게시판";
+			MemberVO loginMember = (MemberVO) request.getAttribute("loginMember");
+			BoardVO read = (BoardVO) request.getAttribute("read");
+			int currentPage = (Integer) request.getAttribute("currentPage");
+			Long post_num = read.getPost_num();
+			String category = read.getCategory();
 			switch (category) {
 			case "anonym":
 				cgk = "익명게시판";
@@ -73,12 +59,6 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 				<div style="font-size: 1.3em; font-weight: bolder; color: black;"><%=cgk%>
 				</div>
 				<br>
-				<%
-				MemberVO loginMember = (MemberVO) request.getAttribute("loginMember");
-				BoardVO read = (BoardVO) request.getAttribute("read");
-				int currentPage = (Integer) request.getAttribute("currentPage");
-				Long post_num = read.getPost_num();
-				%>
 				<div class="p">
 					<div id="p" style="font-weight: bolder"><%=read.getTitle()%>
 					</div>
@@ -124,14 +104,14 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 							if (loginMember != null) {
 								if (r.getWriter().equals(loginMember.getMember_name())) {
 							%>
-							<form id="delReply" method="get" action="/board/delReply"
+							<form name="formDelRe" method="get" action="/board/delReply"
 								encType="UTF-8">
 								<input type="hidden" name='writer_id'
 									value="<%=r.getWriter_id()%>"> <input type="hidden"
 									name='post_num' value="<%=r.getPost_num()%>"> <input
 									type="hidden" name='reply_num' value="<%=r.getReply_num()%>">
-								<a type="submit"
-									onclick="document.getElementById('delReply').submit();">(x)</a>
+								<button type="submit"
+									style="width: 1px; height: 1px; background-color: rgba(0, 0, 0, 0); border: none;">(x)</button>
 							</form>
 							<%
 							}
@@ -174,19 +154,17 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 					%>
 					<button
 						onclick="location.href='/board/edit?post_num=<%=post_num%>'">수정</button>
-					<button
-						onclick="location.href='/board/delete?post_num=<%=post_num%>&writer_id=<%=read.getWriter_id()%>'">삭제</button>
+					<form name="formDelete" action="/board/delete" method="get"
+						encType="UTF-8">
+						<input type="hidden" name='writer_id'
+							value="<%=read.getWriter_id()%>"> <input type="hidden"
+							name='post_num' value="<%=post_num%>">
+						<button type="submit">삭제</button>
+					</form>
 					<%
 					}
 					}
 					%>
-					<%-- <form name="formDelete"	encType="UTF-8">
-						<input type="hidden" name="postNum" value="<%=postNum%>">
-						<input type="hidden" name="category" value="<%=category%>">
-						<input type="hidden" name="page" value="<%=currentPage%>">
-						<button onclick="del_confirm()">삭제</button>
-					</form>
-					 --%>
 					<button
 						onclick="location.href='/board/list?category=<%=category%>&currentPage=<%=currentPage%>'">목록</button>
 				</div>

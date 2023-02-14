@@ -1,3 +1,4 @@
+<%@page import="com.cre.website.service.MemberServiceImpl"%>
 <%@page import="com.cre.domain.BoardVO"%>
 <%@page import="java.util.List"%>
 <%@page import="javax.websocket.Session"%>
@@ -60,7 +61,8 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 							<%=loginMember.getHeart_count()%>
 							개
 						</div>
-						<button id="memberinfo" onclick="location.href='/member/myPost'">회원정보</button>
+						<button id="memberinfo"
+							onclick="location.href='/member/myPage?mode=post'">회원정보</button>
 						<form id="logout" action="/member/logout" method="get">
 							<input type="hidden" name="location" value="/">
 							<button type="submit">로그아웃</button>
@@ -73,17 +75,19 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 			</div>
 			<div class="rps">
 				<p style="margin: 10px;">
-					<span>하트 걸고 가위바위보?!<!-- <img src="/img/questionmark.jpg" style="width:25px; vertical-align:center;" title="이기면 +2, 지면 -1, 비기면 0!"> --></span><br>
-					<span style="font-size: 0.7em;">가위 바위 보 글자를 클릭하면 바로 도전!</span><br>
+					<span>하트 걸고 가위바위보?!<img
+						src="/resources/img/questionmark.jpg"
+						style="width: 25px; vertical-align: center;"
+						title="이기면 +2, 지면 -1, 비기면 0!"></span><br> <span
+						style="font-size: 0.7em;">가위 바위 보 글자를 클릭하면 바로 도전!</span><br>
 				</p>
-				<%-- <%
-				if (true) {
+				<%
+				if (loginMember == null) {
 				%>
 				<div style="padding: 10px; color: grey;">로그인이 필요합니다.</div>
 				<%
 				} else {
-				RpsDAO rps = new RpsDAO();
-				int count = rps.getCountToday(member.getId());
+				int count = (Integer) request.getAttribute("count");
 				int chance = 3 - count;
 				%>
 				<div id="rps" style="padding: 10px;">
@@ -92,7 +96,8 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 					<%
 					if (true) {
 					%>
-					<span id="rtext"> <a >가위✌</a> | <a>바위✊</a> | <a>보🖐</a>
+					<span id="rtext"> <a href="/member/rps?input=s">가위✌</a> | <a
+						href="/member/rps?input=r">바위✊</a> | <a href="/member/rps?input=p">보🖐</a>
 					</span>
 					<%
 					} else {
@@ -100,11 +105,11 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 					<span>&#187; 오늘 기회를 모두 사용했습니다. &#171;</span>
 					<%
 					}
-					%> --%>
-				<%-- </div>
+					%>
+				</div>
 				<%
 				}
-				%> --%>
+				%>
 			</div>
 
 			<div class="notice">
@@ -124,7 +129,8 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 						}
 					%>
 					<div id="n">
-						[ 운영자 ] <a href="/board/read?post_num=<%=b.getPost_num()%>&category=notice&currentPage=1"><%=title%></a>
+						[ 운영자 ] <a
+							href="/board/read?post_num=<%=b.getPost_num()%>&category=notice&currentPage=1"><%=title%></a>
 						<hr>
 					</div>
 					<%

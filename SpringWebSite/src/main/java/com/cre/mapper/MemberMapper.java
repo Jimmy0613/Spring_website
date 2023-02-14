@@ -20,6 +20,13 @@ public interface MemberMapper {
 
 	public List<ReplyVO> myReply(@Param("member_id") String member_id, @Param("startIndex") int startIndex);
 
+	public void myEmail(MemberVO mvo);
+
 	public PageVO page(String member_id);
+
 	public PageVO page2(String member_id);
+
+	public int rpsCount(@Param("today") String today, @Param("member_id") String memeber_id);
+
+	public void rps(@Param("member_id")String member_id, @Param("result")String result);
 }

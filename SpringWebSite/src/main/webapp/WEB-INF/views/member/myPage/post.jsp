@@ -24,9 +24,6 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 	href="/resources/css/mypage.css?ver=<%=fmt.format(lastModifiedStyle)%>">
 </head>
 <body>
-	<%
-	List<BoardVO> myPost = (List<BoardVO>) request.getAttribute("myPost");
-	%>
 	<div class="container">
 		<div class="header">
 			<div class="title"></div>
@@ -50,6 +47,7 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 							</div>
 							<div class="list_z">
 								<%
+								List<BoardVO> myPost = (List<BoardVO>) request.getAttribute("myPost");
 								if (myPost.size() != 0) {
 									for (BoardVO b : myPost) {
 										String title = "";
