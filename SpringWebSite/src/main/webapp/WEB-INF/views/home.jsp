@@ -27,9 +27,6 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 	href="/resources/css/home.css?ver=<%=fmt.format(lastModifiedStyle)%>">
 </head>
 <body>
-	<%
-	MemberVO loginMember = (MemberVO) session.getAttribute("loginMember");
-	%>
 	<div class="container">
 		<div class="header">
 			<div class="title"></div>
@@ -40,38 +37,33 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 		<div class="content">
 			<div class="member_info">
 				<p style="margin: 10px;">내 정보</p>
-				<%
-				if (loginMember == null) {
-				%>
-				<div style="padding: 20px;">
-					<span style="color: grey;">로그인이 필요합니다.</span> <br> <br> <a
-						style="font-size: 0.9em;" href="/member/login?location=/">로그인</a>
-					<a style="font-size: 0.9em;" href="/member/join?location=/">
-						회원가입 </a>
-				</div>
-				<%
-				} else {
-				%>
-				<div class="login_info"
-					style="align-items: center; justify-content: center;">
-					<div id="f">
-						<div style="grid-column-start: 1; grid-column-end: 3;">
-							<%=loginMember.getInfo()%><br> <b style="color: red;">❤</b>
-							:
-							<%=loginMember.getHeart_count()%>
-							개
+				<c:choose>
+					<c:when test="${loginMember==null}">
+						<div style="padding: 20px;">
+							<span style="color: grey;">로그인이 필요합니다.</span> <br> <br>
+							<a style="font-size: 0.9em;" href="/member/login?location=/">로그인</a>
+							<a style="font-size: 0.9em;" href="/member/join?location=/">
+								회원가입 </a>
 						</div>
-						<button id="memberinfo"
-							onclick="location.href='/member/myPage?mode=post'">회원정보</button>
-						<form id="logout" action="/member/logout" method="get">
-							<input type="hidden" name="location" value="/">
-							<button type="submit">로그아웃</button>
-						</form>
-					</div>
-				</div>
-				<%
-				}
-				%>
+					</c:when>
+					<c:otherwise>
+						<div class="login_info"
+							style="align-items: center; justify-content: center;">
+							<div id="f">
+								<div style="grid-column-start: 1; grid-column-end: 3;">
+									${loginMember.info()} <br> <b style="color: red;">❤</b> :
+									${loginMember.heart_count}개
+								</div>
+								<button id="memberinfo"
+									onclick="location.href='/member/myPage?mode=post'">회원정보</button>
+								<form id="logout" action="/member/logout" method="get">
+									<input type="hidden" name="location" value="/">
+									<button type="submit">로그아웃</button>
+								</form>
+							</div>
+						</div>
+					</c:otherwise>
+				</c:choose>
 			</div>
 			<div class="rps">
 				<p style="margin: 10px;">
@@ -81,35 +73,28 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 						title="이기면 +2, 지면 -1, 비기면 0!"></span><br> <span
 						style="font-size: 0.7em;">가위 바위 보 글자를 클릭하면 바로 도전!</span><br>
 				</p>
-				<%
-				if (loginMember == null) {
-				%>
-				<div style="padding: 10px; color: grey;">로그인이 필요합니다.</div>
-				<%
-				} else {
-				int count = (Integer) request.getAttribute("count");
-				int chance = 3 - count;
-				%>
-				<div id="rps" style="padding: 10px;">
-					<span>오늘 남은 횟수: <%=chance%>회
-					</span> <br>
-					<%
-					if (true) {
-					%>
-					<span id="rtext"> <a href="/member/rps?input=s">가위✌</a> | <a
-						href="/member/rps?input=r">바위✊</a> | <a href="/member/rps?input=p">보🖐</a>
-					</span>
-					<%
-					} else {
-					%>
-					<span>&#187; 오늘 기회를 모두 사용했습니다. &#171;</span>
-					<%
-					}
-					%>
-				</div>
-				<%
-				}
-				%>
+				<c:choose>
+					<c:when test="${loginMember==null}">
+						<div style="padding: 10px; color: grey;">로그인이 필요합니다.</div>
+					</c:when>
+					<c:otherwise>
+						<div id="rps" style="padding: 10px;">
+							<span>오늘 남은 횟수: ${3-count}회 </span> <br>
+							<c:choose>
+								<c:when test="${3-count>0}">
+									<span id="rtext"> <a href="/member/rps?input=s">가위✌</a>
+										| <a href="/member/rps?input=r">바위✊</a> | <a
+										href="/member/rps?input=p">보🖐</a>
+									</span>
+								</c:when>
+								<c:otherwise>
+									<span>&#187; 오늘 기회를 모두 사용했습니다. &#171;</span>
+								</c:otherwise>
+							</c:choose>
+						</div>
+					</c:otherwise>
+				</c:choose>
+
 			</div>
 
 			<div class="notice">
@@ -118,65 +103,47 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 						style="font-size: 0.8em;">더보기</a>
 				</p>
 				<div id="notice">
-					<%
-					List<BoardVO> notice = (List<BoardVO>) request.getAttribute("homeNotice");
-					for (BoardVO b : notice) {
-						String title = "";
-						if (b.getTitle().length() > 16) {
-							title = b.getTitle().substring(0, 16) + "...";
-						} else {
-							title = b.getTitle();
-						}
-					%>
-					<div id="n">
-						[ 운영자 ] <a
-							href="/board/read?post_num=<%=b.getPost_num()%>&category=notice&currentPage=1"><%=title%></a>
-						<hr>
-					</div>
-					<%
-					}
-					%>
+					<c:if test="${homeNotice!=null}">
+						<c:forEach var="notice" items="${homeNotice}">
+							<div id="n">
+								[ 운영자 ] <a
+									href="/board/read?post_num=${notice.post_num}&category=notice&currentPage=1">${notice.title}</a>
+								<hr>
+							</div>
+						</c:forEach>
+					</c:if>
 				</div>
 			</div>
 			<div class="hot">
 				<p style="margin: 10px;">
-					인기글 <a href="/board/list" style="font-size: 0.8em;">더보기</a>
+					인기글 <a href="/board/popular" style="font-size: 0.8em;">더보기</a>
 				</p>
 				<div id="hot">
-					<%
-					List<BoardVO> popular = (List<BoardVO>) request.getAttribute("homePopular");
-					for (BoardVO b : popular) {
-						String cgk = "자유";
-						if (b.getCategory().equals("anonym"))
-							cgk = "익명";
-						String title = "";
-						if (b.getTitle().length() > 16) {
-							title = b.getTitle().substring(0, 16) + "...";
-						} else {
-							title = b.getTitle();
-						}
-						if (b.getReply_count() > 0)
-							title = title + " (" + b.getReply_count() + ")";
-						title = title + "   (❤" + b.getHeart_count() + ")";
-					%>
-					<div id="n">
-						[
-						<%=cgk%>
-						] <a
-							href="/board/read?post_num=<%=b.getPost_num()%>&category=popular&currentPage=1"><%=title%>
-						</a>
-						<hr>
-					</div>
-					<%
-					}
-					%>
+					<c:if test="${homePopular!=null}">
+						<c:forEach var="popular" items="${homePopular }">
+							<div id="n">
+								<c:choose>
+									<c:when test="${popular.category eq 'anonym'}">
+										[익명]
+									</c:when>
+									<c:otherwise>
+										[자유]
+									</c:otherwise>
+								</c:choose>
+								<a
+									href="/board/read?post_num=${popular.post_num}&category=popular&currentPage=1">${popular.title}
+								</a>
+								<hr>
+							</div>
+						</c:forEach>
+					</c:if>
 				</div>
 			</div>
 			<div class="game">
 				<p style="margin: 10px;">
 					COLORFUL(게임) <a style="font-size: 0.8em;">바로가기</a>
 				</p>
-				<!-- <img src="/img/rpg.png" style="width: 320px; margin-left: 10px;"> -->
+				<img src="/resources/img/rpg.png" style="width: 320px; margin-left: 10px;">
 			</div>
 			<div class="sample"></div>
 		</div>

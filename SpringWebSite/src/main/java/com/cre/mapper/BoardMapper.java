@@ -7,15 +7,22 @@ import org.apache.ibatis.annotations.Param;
 import com.cre.domain.BoardVO;
 import com.cre.domain.PageVO;
 import com.cre.domain.ReplyVO;
+import com.cre.domain.ReportVO;
 
 public interface BoardMapper {
-	public List<BoardVO> listBoard(@Param("startIndex") int startIndex, @Param("category") String category);
+	public List<BoardVO> listGeneral(@Param("startIndex") int startIndex);
+
+	public List<BoardVO> listNotice(@Param("startIndex") int startIndex);
+
+	public List<BoardVO> listAnonym(@Param("startIndex") int startIndex);
 
 	public List<BoardVO> listPopular();
 
 	public List<BoardVO> homeNotice();
 
 	public List<BoardVO> homePopular();
+
+	public String getWriterId(Long post_num);
 
 	public BoardVO read(Long post_num);
 
@@ -31,6 +38,10 @@ public interface BoardMapper {
 	public void view(Long post_num);
 
 	public void write(BoardVO bvo);
+
+	public void report(ReportVO rep);
+
+	public List<ReportVO> listReport();
 
 	public void postPlus(BoardVO bvo);
 

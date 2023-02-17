@@ -15,9 +15,8 @@ public class MemberVO {
 	private String character1;
 	private String character2;
 
-	public String getInfo() {
-		String info = "🙂 " + this.member_id + "(" + this.member_name + ") 님";
-		return info;
+	public String info() {
+		String info;
+		return info = "🙂 " + member_id + "(" + member_name + ") 님";
 	}
-	
 }

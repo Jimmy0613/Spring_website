@@ -8,7 +8,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>JspWebsite</title>
+<title>SpringWebsite</title>
 <%
 /* CSS/JS 파일 캐시 방지 */
 String styleCss = application.getRealPath("/resources/css/board.css");

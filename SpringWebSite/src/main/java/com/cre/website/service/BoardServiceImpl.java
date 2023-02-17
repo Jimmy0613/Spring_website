@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.cre.domain.BoardVO;
 import com.cre.domain.PageVO;
 import com.cre.domain.ReplyVO;
+import com.cre.domain.ReportVO;
 import com.cre.mapper.BoardMapper;
 
 import lombok.Setter;
@@ -21,8 +22,18 @@ public class BoardServiceImpl implements BoardService {
 	private BoardMapper mapper;
 
 	@Override
-	public List<BoardVO> listBoard(int startIndex, String category) {
-		return mapper.listBoard(startIndex, category);
+	public List<BoardVO> listGeneral(int startIndex) {
+		return mapper.listGeneral(startIndex);
+	}
+
+	@Override
+	public List<BoardVO> listNotice(int startIndex) {
+		return mapper.listNotice(startIndex);
+	}
+
+	@Override
+	public List<BoardVO> listAnonym(int startIndex) {
+		return mapper.listAnonym(startIndex);
 	}
 
 	@Override
@@ -51,6 +62,11 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
+	public String getWriterId(Long post_num) {
+		return mapper.getWriterId(post_num);
+	}
+
+	@Override
 	public void heart(Long post_num, String writer_id, String member_id) {
 		mapper.heart(post_num, writer_id, member_id);
 	}
@@ -75,6 +91,16 @@ public class BoardServiceImpl implements BoardService {
 	public void write(BoardVO bvo) {
 		mapper.write(bvo);
 		mapper.postPlus(bvo);
+	}
+
+	@Override
+	public void report(ReportVO rep) {
+		mapper.report(rep);
+	}
+
+	@Override
+	public List<ReportVO> listReport() {
+		return mapper.listReport();
 	}
 
 	@Override

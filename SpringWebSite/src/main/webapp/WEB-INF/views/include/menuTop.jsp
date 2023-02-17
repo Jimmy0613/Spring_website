@@ -13,6 +13,6 @@
 			style="color: orange;">O</b><b style="color: brown;">L</b><b
 			style="color: green;">O</b><b style="color: blue;">R</b><b
 			style="color: grey;">F</b><b style="color: purple;">U</b><b
-			style="color: #4d87bb;">L</b></a> <a href="/board/list">BORAD</a></span>
+			style="color: #4d87bb;">L</b></a> <a href="/board/popular">BORAD</a></span>
 </body>
 </html>

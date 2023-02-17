@@ -24,7 +24,7 @@
 				<div>
 					<b>이름</b> <br> <b>아이디</b> <br> <b>이메일</b>
 				</div>
-				<div><%=user.getMember_name()%><br><%=user.getMember_name()%><br>
+				<div><%=user.getMember_name()%><br><%=user.getMember_id()%><br>
 					<%
 					if (user.getEmail().equals("미등록")) {
 					%>

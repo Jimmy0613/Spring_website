@@ -13,9 +13,21 @@
 		desc,
 		view_count desc limit 0, 5
 	</select>
-	<select id="listBoard" parameterType="map"
+	<select id="listGeneral" parameterType="map"
 		resultType="com.cre.domain.BoardVO">
-		SELECT * from board where category=#{category}
+		SELECT * from board where category='general'
+		order by
+		post_num desc limit #{startIndex}, 10
+	</select>
+	<select id="listNotice" parameterType="map"
+		resultType="com.cre.domain.BoardVO">
+		SELECT * from board where category='notice'
+		order by
+		post_num desc limit #{startIndex}, 10
+	</select>
+	<select id="listAnonym" parameterType="map"
+		resultType="com.cre.domain.BoardVO">
+		SELECT * from board where category='anonym'
 		order by
 		post_num desc limit #{startIndex}, 10
 	</select>
@@ -25,11 +37,19 @@
 		order by heart_count
 		desc, view_count desc limit 0, 10
 	</select>
+	<select id="listReport" resultType="com.cre.domain.ReportVO">
+		SELECT * from report;
+	</select>
 	<insert id="write">
 		INSERT into board(category, writer, writer_id, title,
 		content)
 		values(#{category},
 		#{writer},#{writer_id},#{title},#{content})
+	</insert>
+	<insert id="report">
+		INSERT into
+		report(post_num,reporter_id,reported_user,reason,content)
+		values(#{post_num},#{reporter_id},#{reported_user},#{reason},#{content})
 	</insert>
 	<update id="postPlus">
 		UPDATE members set post_count = post_count + 1 where
@@ -46,7 +66,10 @@
 		members set heart_count = heart_count - 3 where member_id=
 		#{writer_id};
 	</update>
-
+	<select id="getWriterId" resultType="String">
+		SELECT writer_id from board
+		where post_num=#{post_num}
+	</select>
 	<select id="read" resultType="com.cre.domain.BoardVO">
 		SELECT * from board where post_num
 		= #{post_num}

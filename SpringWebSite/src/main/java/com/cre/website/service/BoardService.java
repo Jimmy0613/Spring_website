@@ -5,10 +5,15 @@ import java.util.List;
 import com.cre.domain.BoardVO;
 import com.cre.domain.PageVO;
 import com.cre.domain.ReplyVO;
+import com.cre.domain.ReportVO;
 
 public interface BoardService {
 
-	public List<BoardVO> listBoard(int startIndex, String category);
+	public List<BoardVO> listGeneral(int startIndex);
+
+	public List<BoardVO> listNotice(int startIndex);
+
+	public List<BoardVO> listAnonym(int startIndex);
 
 	public List<BoardVO> listPopular();
 
@@ -19,6 +24,12 @@ public interface BoardService {
 	public PageVO page(String category);
 
 	public void write(BoardVO bvo);
+
+	public String getWriterId(Long post_num);
+
+	public void report(ReportVO rep);
+
+	public List<ReportVO> listReport();
 
 	public void delete(BoardVO bvo);
 

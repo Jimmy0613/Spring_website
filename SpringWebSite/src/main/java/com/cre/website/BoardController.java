@@ -15,6 +15,7 @@ import com.cre.domain.BoardVO;
 import com.cre.domain.MemberVO;
 import com.cre.domain.PageVO;
 import com.cre.domain.ReplyVO;
+import com.cre.domain.ReportVO;
 import com.cre.website.service.BoardService;
 import com.cre.website.service.MemberService;
 
@@ -23,7 +24,7 @@ import lombok.extern.log4j.Log4j;
 
 @Log4j
 @RequestMapping("/board/*")
-@SessionAttributes({ "loginMember", "currentPage", "category", "temp" })
+@SessionAttributes({ "loginMember", "currentPage", "category", "temp", "reported_user" })
 @AllArgsConstructor
 @Controller
 public class BoardController {
@@ -34,22 +35,73 @@ public class BoardController {
 //	private HttpServletRequest request;
 //	HttpSession session = request.getSession();
 
-	@GetMapping("/list")
-	public String list(HttpServletRequest request,
-			@RequestParam(value = "category", defaultValue = "popular") String category,
+	@GetMapping("/general")
+	public String listGeneral(HttpServletRequest request,
 			@RequestParam(value = "currentPage", defaultValue = "1") int currentPage, Model model) {
 		HttpSession session = request.getSession();
-		if (category.equals("popular")) {
-			model.addAttribute("list", service.listPopular());
-		} else {
-			model.addAttribute("page", service.page(category));
-			int startIndex = (currentPage - 1) * PageVO.PER_PAGE;
-			model.addAttribute("list", service.listBoard(startIndex, category));
-		}
+		model.addAttribute("page", service.page("general"));
+		int startIndex = (currentPage - 1) * PageVO.PER_PAGE;
+		model.addAttribute("general", service.listGeneral(startIndex));
 		model.addAttribute("loginMember", session.getAttribute("loginMember"));
-		model.addAttribute("category", category);
+		model.addAttribute("category", "general");
 		model.addAttribute("currentPage", currentPage);
-		return "board/list";
+		return "board/general";
+	}
+
+	@GetMapping("/anonym")
+	public String listAnonym(HttpServletRequest request,
+			@RequestParam(value = "currentPage", defaultValue = "1") int currentPage, Model model) {
+		HttpSession session = request.getSession();
+		model.addAttribute("page", service.page("anonym"));
+		int startIndex = (currentPage - 1) * PageVO.PER_PAGE;
+		model.addAttribute("anonym", service.listAnonym(startIndex));
+		model.addAttribute("loginMember", session.getAttribute("loginMember"));
+		model.addAttribute("category", "anonym");
+		model.addAttribute("currentPage", currentPage);
+		return "board/anonym";
+	}
+
+	@GetMapping("/notice")
+	public String listNotice(HttpServletRequest request,
+			@RequestParam(value = "currentPage", defaultValue = "1") int currentPage, Model model) {
+		HttpSession session = request.getSession();
+		model.addAttribute("page", service.page("notice"));
+		int startIndex = (currentPage - 1) * PageVO.PER_PAGE;
+		model.addAttribute("notice", service.listNotice(startIndex));
+		model.addAttribute("loginMember", session.getAttribute("loginMember"));
+		model.addAttribute("category", "notice");
+		model.addAttribute("currentPage", currentPage);
+		return "board/notice";
+	}
+
+	@GetMapping("/popular")
+	public String listPopular(HttpServletRequest request, Model model) {
+		HttpSession session = request.getSession();
+		model.addAttribute("list", service.listPopular());
+		model.addAttribute("loginMember", session.getAttribute("loginMember"));
+		return "board/popular";
+	}
+
+	@GetMapping("/report")
+	public void report(@RequestParam(value = "post_num", defaultValue = "0") Long post_num,
+			@RequestParam(value = "reported_user", defaultValue = "(이름)") String reported_user, Model model) {
+		model.addAttribute("post_num", post_num);
+		model.addAttribute("reported_user", reported_user);
+	}
+
+	@GetMapping("/admin/report")
+	public void report(Model model) {
+		model.addAttribute("list", service.listReport());
+	}
+
+	@PostMapping("/report")
+	public String report(HttpServletRequest request, ReportVO rep) {
+		service.report(rep);
+		String alert = "신고를 완료했습니다.";
+		String url = "/board/popular";
+		request.setAttribute("msg", alert);
+		request.setAttribute("url", url);
+		return "alert";
 	}
 
 	@GetMapping(path = { "/read", "/edit" })
@@ -59,13 +111,15 @@ public class BoardController {
 		HttpSession session = request.getSession();
 		String path = request.getServletPath();
 		if (service.read(post_num) == null)
-			return "redirect:/board/list";
+			return "redirect:/board/" + category;
 		if (!category.equals(""))
 			model.addAttribute("category", category);
 		model.addAttribute("currentPage", currentPage);
 		model.addAttribute("loginMember", session.getAttribute("loginMember"));
 		service.view(post_num);
-		model.addAttribute("read", service.read(post_num));
+		BoardVO bvo = service.read(post_num);
+		bvo.setContent(bvo.getContent().replaceAll("\r\n", "<br>"));
+		model.addAttribute("read", bvo);
 		model.addAttribute("reply", service.listReply(post_num));
 		return path;
 	}
@@ -94,7 +148,7 @@ public class BoardController {
 			service.delete(temp);
 			model.addAttribute("loginMember", serviceMember.getMember(temp.getWriter_id()));
 			String alert = "게시글이 삭제되었습니다.";
-			String url = "/board/list?category=" + category;
+			String url = "/board/" + category;
 			request.setAttribute("msg", alert);
 			request.setAttribute("url", url);
 			return "alert";
@@ -140,10 +194,12 @@ public class BoardController {
 	public String write(HttpServletRequest request, BoardVO bvo, Model model) {
 		HttpSession session = request.getSession();
 		bvo.setCategory((String) session.getAttribute("category"));
+		String text = bvo.getContent().replaceAll("<br>", "\r\n");
+		bvo.setContent(text);
 		service.write(bvo);
 		model.addAttribute("loginMember", serviceMember.getMember(bvo.getWriter_id()));
 		log.info("글씀");
-		return "redirect:/board/list";
+		return "redirect:/board/" + bvo.getCategory();
 	}
 
 	@GetMapping("/write")
@@ -156,6 +212,8 @@ public class BoardController {
 
 	@PostMapping("/edit")
 	public String edit(@RequestParam("post_num") Long post_num, BoardVO bvo) {
+		String text = bvo.getContent().replaceAll("<br>", "\r\n");
+		bvo.setContent(text);
 		service.edit(bvo);
 		log.info("수정함");
 		return "redirect:/board/read?post_num=" + post_num;

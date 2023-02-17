@@ -9,30 +9,32 @@
 </head>
 <body>
 	<%
-	MemberVO member = (MemberVO)request.getAttribute("loginMember");
+	MemberVO member = (MemberVO) request.getAttribute("loginMember");
 	%>
 	<div class="member">
-		<div class="member_info" style="min-height:100px;">
-		<p style="margin: 10px;">내 정보</p>
+		<div class="member_info" style="min-height: 100px;">
+			<p style="margin: 10px;">내 정보</p>
 			<%
 			if (member == null) {
 			%>
 			<div>
-				<span style="color:grey;">로그인이 필요합니다.</span> <br><br> <a style="font-size: 0.9em;"
-					href="/member/login?location=/board/list">로그인</a> <a
-					style="font-size: 0.9em;" href="/member/join?location=/board/list">
-					회원가입 </a>
+				<span style="color: grey;">로그인이 필요합니다.</span> <br> <br> <a
+					style="font-size: 0.9em;"
+					href="/member/login?location=/board/popular">로그인</a> <a
+					style="font-size: 0.9em;"
+					href="/member/join?location=/board/popular"> 회원가입 </a>
 			</div>
 			<%
 			} else {
 			%>
 			<div class="login_info">
-				<span><%=member.getInfo()%> </span> <span
-					style="text-align: center;"><b style="color:red;">❤</b> : <%=member.getHeart_count()%>개</span>
+				<span><%=member.info()%> </span> <span style="text-align: center;"><b
+					style="color: red;">❤</b> : <%=member.getHeart_count()%>개</span>
 				<div id="f">
-					<button id="memberinfo" onclick="location.href='/member/myPage?mode=post'">회원정보</button>
+					<button id="memberinfo"
+						onclick="location.href='/member/myPage?mode=post'">회원정보</button>
 					<form id="logout" action="/member/logout" method="get">
-						<input type="hidden" name="location" value="/board/list">
+						<input type="hidden" name="location" value="/board/popular">
 						<button type="submit">로그아웃</button>
 					</form>
 				</div>
@@ -54,22 +56,37 @@
 	<div id="board_name">
 		<div>
 			<p class="board_name">
-				<a href="/board/list?category=notice">공지사항</a>
+				<a href="/board/notice">공지사항</a>
 			</p>
 		</div>
 		<div>
 			<p class="board_name">
-				<a href="/board/list?category=general">자유게시판</a>
+				<a href="/board/general">자유게시판</a>
 			</p>
 		</div>
 		<div>
 			<p class="board_name">
-				<a href="/board/list?category=anonym">익명게시판</a>
+				<a href="/board/anonym">익명게시판</a>
 			</p>
 		</div>
 		<div>
 			<p class="board_name">
-				<a href="/board/list?category=report">신고게시판</a>
+				<%
+				if (member != null) {
+				%>
+				<a href="/board/report">신고하기</a>
+				<%
+				if (member.getMember_id().equals("manager")) {
+				%>
+				<a href="/board/admin/report">⚙</a>
+				<%
+				}
+				} else {
+				%>
+				<a title="로그인 후 이용 가능합니다.">신고게시판</a>
+				<%
+				}
+				%>
 			</p>
 		</div>
 	</div>

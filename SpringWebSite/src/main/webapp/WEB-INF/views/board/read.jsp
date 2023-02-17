@@ -50,9 +50,6 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 			case "notice":
 				cgk = "공지사항";
 				break;
-			case "report":
-				cgk = "신고하기";
-				break;
 			}
 			%>
 			<div class="post">
@@ -67,26 +64,39 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 						|
 						<%=read.getPost_date()%>
 						| 조회수
-						<%=read.getView_count()%></div>
+						<%=read.getView_count()%>
+						| 글번호
+						<%=read.getPost_num()%></div>
 					<div id="c"><%=read.getContent()%></div>
 					<div id="p" style="display: flex;">
-						댓글
-						<%=read.getReply_count()%>개 | 하트
-						<%=read.getHeart_count()%>개
+						<form action="/board/report" method="get">
+							<input type="hidden" name='post_num'
+								value="<%=read.getPost_num()%>"><input
+								type="hidden" name='reported_user' value="<%=read.getWriter()%>">
+							<button id="heartBtn" type="submit" title="신고하기"
+								style="border: none; background-color: #f8f8f8; font-size: 1em; height: 1px;">🚨
+							</button>
+						</form>
+						&nbsp;댓글
+						<%=read.getReply_count()%>개 &nbsp;&nbsp;|
 						<%
-					if (loginMember != null && (!loginMember.getMember_id().equals(read.getWriter_id()))) {
-					%>
+						if (loginMember != null && (!loginMember.getMember_id().equals(read.getWriter_id()))) {
+						%>
 						<form action="/board/heart" method="get">
 							<input type="hidden" name='post_num'
 								value="<%=read.getPost_num()%>"> <input type="hidden"
 								name='writer_id' value="<%=read.getWriter_id()%>"> <input
 								type="hidden" name='member_id'
 								value="<%=loginMember.getMember_id()%>">
-							<button id="heartBtn" type="submit">❤</button>
+							<button id="heartBtn" type="submit" title="하트 보내기"
+								style="border: none; background-color: #f8f8f8; font-size: 1em; height: 1px;">💓</button>
 						</form>
 						<%
 						}
 						%>
+						&nbsp; 하트
+						<%=read.getHeart_count()%>개
+
 					</div>
 					<hr style="height: 0.1px; width: 95%;">
 					<div id="p" style="color: black; font-size: 0.9em;">
@@ -166,7 +176,7 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 					}
 					%>
 					<button
-						onclick="location.href='/board/list?category=<%=category%>&currentPage=<%=currentPage%>'">목록</button>
+						onclick="location.href='/board/<%=category%>?currentPage=<%=currentPage%>'">목록</button>
 				</div>
 			</div>
 		</div>

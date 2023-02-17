@@ -20,7 +20,7 @@
 	//(처음) 관련================================================
 	if (currentPage > 1) {
 	%>
-	<a href="/board/list?category=<%=cgp%>"
+	<a href="/board/<%=cgp%>"
 		style="font-weight: bolder; font-size: 0.8em;">처음</a>
 	<%
 	} else {
@@ -34,13 +34,13 @@
 	if (currentPage % PageVO.PAGE_BLOCK == 1) {
 	%>
 	<a
-		href="/board/list?category=<%=cgp%>&currentPage=<%=((currentPageBlock - 1) * PageVO.PAGE_BLOCK)%>"
+		href="/board/<%=cgp%>?currentPage=<%=((currentPageBlock - 1) * PageVO.PAGE_BLOCK)%>"
 		style="font-weight: bolder; font-size: 0.8em;">이전</a>
 	<%
 	} else if (currentPage > 1) {
 	%>
 	<a
-		href="/board/list?category=<%=cgp%>&currentPage=<%=(currentPage - 1)%>"
+		href="/board/<%=cgp%>?currentPage=<%=(currentPage - 1)%>"
 		style="font-weight: bolder; font-size: 0.8em;">이전</a>
 	<%
 	}
@@ -57,11 +57,11 @@
 	if (i == currentPage) {
 	%>
 	<a style="font-weight: bolder;"
-		href="/board/list?category=<%=cgp%>&currentPage=<%=i%>"><%=i%></a>
+		href="/board/<%=cgp%>?currentPage=<%=i%>"><%=i%></a>
 	<%
 	} else {
 	%>
-	<a href="/board/list?category=<%=cgp%>&currentPage=<%=i%>"><%=i%></a>
+	<a href="/board/<%=cgp%>?currentPage=<%=i%>"><%=i%></a>
 	<%
 	}
 	}
@@ -70,13 +70,13 @@
 	if (currentPage % PageVO.PAGE_BLOCK == 0 && currentPage < totalPage) {
 	%>
 	<a
-		href="/board/list?category=<%=cgp%>&currentPage=<%=(currentPageBlock * PageVO.PAGE_BLOCK + 1)%>"
+		href="/board/<%=cgp%>?currentPage=<%=(currentPageBlock * PageVO.PAGE_BLOCK + 1)%>"
 		style="font-weight: bolder; font-size: 0.8em;">다음</a>
 	<%
 	} else if (currentPage < totalPage) {
 	%>
 	<a
-		href="/board/list?category=<%=cgp%>&currentPage=<%=currentPage + 1%>"
+		href="/board/<%=cgp%>?currentPage=<%=currentPage + 1%>"
 		style="font-weight: bolder; font-size: 0.8em;">다음</a>
 	<%
 	} else {
@@ -88,7 +88,7 @@
 	//(마지막) 관련================================================
 	if (currentPage < totalPage) {
 	%>
-	<a href="/board/list?category=<%=cgp%>&currentPage=<%=totalPage%>"
+	<a href="/board/<%=cgp%>?currentPage=<%=totalPage%>"
 		style="font-weight: bolder; font-size: 0.8em;">마지막</a>
 	<%
 	} else {
