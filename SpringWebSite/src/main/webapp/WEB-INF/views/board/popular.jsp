@@ -51,9 +51,9 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 					</div>
 					<div class="list_z">
 						<%
-						List<BoardVO> list = (List<BoardVO>) request.getAttribute("list");
-						if (list.size() != 0) {
-							for (BoardVO b : list) {
+						List<BoardVO> popular = (List<BoardVO>) request.getAttribute("popular");
+						if (popular.size() != 0) {
+							for (BoardVO b : popular) {
 						%>
 						<div class="list_n" style="background-color: white;">
 							<%

@@ -22,25 +22,19 @@ public class BoardServiceImpl implements BoardService {
 	private BoardMapper mapper;
 
 	@Override
-	public List<BoardVO> listGeneral(int startIndex) {
-		return mapper.listGeneral(startIndex);
+	public List<BoardVO> listBoard(int startIndex, String path) {
+		switch (path) {
+		case "general":
+			return mapper.listGeneral(startIndex);
+		case "anonym":
+			return mapper.listAnonym(startIndex);
+		case "notice":
+			return mapper.listNotice(startIndex);
+		default:
+			return mapper.listPopular();
+		}
 	}
-
-	@Override
-	public List<BoardVO> listNotice(int startIndex) {
-		return mapper.listNotice(startIndex);
-	}
-
-	@Override
-	public List<BoardVO> listAnonym(int startIndex) {
-		return mapper.listAnonym(startIndex);
-	}
-
-	@Override
-	public List<BoardVO> listPopular() {
-		return mapper.listPopular();
-	}
-
+	
 	@Override
 	public List<BoardVO> homeNotice() {
 		return mapper.homeNotice();

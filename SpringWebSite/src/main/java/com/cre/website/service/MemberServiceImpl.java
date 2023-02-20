@@ -50,6 +50,11 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
+	public int idCheck(String member_id) {
+		return mapper.idCheck(member_id);
+	}
+
+	@Override
 	public String memberJoin(MemberVO mvo, String pwCheck) {
 		if (mvo.getEmail().equals("")) {
 			mvo.setEmail("미등록");
@@ -93,13 +98,8 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public PageVO page(String member_id) {
-		return mapper.page(member_id);
-	}
-
-	@Override
-	public PageVO page2(String member_id) {
-		return mapper.page(member_id);
+	public PageVO page(String member_id, String table) {
+		return mapper.page(member_id, table);
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package com.cre.website;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,55 +32,22 @@ public class BoardController {
 	private BoardService service;
 	private MemberService serviceMember;
 
-//	@Autowired
-//	private HttpServletRequest request;
-//	HttpSession session = request.getSession();
+	/*
+	 * @Autowired private HttpServletRequest request;
+	 */
 
-	@GetMapping("/general")
-	public String listGeneral(HttpServletRequest request,
-			@RequestParam(value = "currentPage", defaultValue = "1") int currentPage, Model model) {
+	@GetMapping({ "/general", "/anonym", "/notice", "/popular" })
+	public String listGeneral(HttpServletRequest request, @RequestParam(value = "currentPage", defaultValue = "1") int currentPage, Model model) {
 		HttpSession session = request.getSession();
-		model.addAttribute("page", service.page("general"));
-		int startIndex = (currentPage - 1) * PageVO.PER_PAGE;
-		model.addAttribute("general", service.listGeneral(startIndex));
+		String path = request.getServletPath();
+		path = path.substring(7);
 		model.addAttribute("loginMember", session.getAttribute("loginMember"));
-		model.addAttribute("category", "general");
 		model.addAttribute("currentPage", currentPage);
-		return "board/general";
-	}
-
-	@GetMapping("/anonym")
-	public String listAnonym(HttpServletRequest request,
-			@RequestParam(value = "currentPage", defaultValue = "1") int currentPage, Model model) {
-		HttpSession session = request.getSession();
-		model.addAttribute("page", service.page("anonym"));
 		int startIndex = (currentPage - 1) * PageVO.PER_PAGE;
-		model.addAttribute("anonym", service.listAnonym(startIndex));
-		model.addAttribute("loginMember", session.getAttribute("loginMember"));
-		model.addAttribute("category", "anonym");
-		model.addAttribute("currentPage", currentPage);
-		return "board/anonym";
-	}
-
-	@GetMapping("/notice")
-	public String listNotice(HttpServletRequest request,
-			@RequestParam(value = "currentPage", defaultValue = "1") int currentPage, Model model) {
-		HttpSession session = request.getSession();
-		model.addAttribute("page", service.page("notice"));
-		int startIndex = (currentPage - 1) * PageVO.PER_PAGE;
-		model.addAttribute("notice", service.listNotice(startIndex));
-		model.addAttribute("loginMember", session.getAttribute("loginMember"));
-		model.addAttribute("category", "notice");
-		model.addAttribute("currentPage", currentPage);
-		return "board/notice";
-	}
-
-	@GetMapping("/popular")
-	public String listPopular(HttpServletRequest request, Model model) {
-		HttpSession session = request.getSession();
-		model.addAttribute("list", service.listPopular());
-		model.addAttribute("loginMember", session.getAttribute("loginMember"));
-		return "board/popular";
+		model.addAttribute("page", service.page(path));
+		model.addAttribute(path, service.listBoard(startIndex, path));
+		model.addAttribute("category", path);
+		return "board/" + path;
 	}
 
 	@GetMapping("/report")

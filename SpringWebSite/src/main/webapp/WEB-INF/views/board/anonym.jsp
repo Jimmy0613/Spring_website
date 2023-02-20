@@ -62,8 +62,8 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 							<div id="t">
 								<%
 								String title = "";
-								if (b.getTitle().length() > 14) {
-									title = b.getTitle().substring(0, 14) + "...";
+								if (b.getTitle().length() > 16) {
+									title = b.getTitle().substring(0, 16) + "...";
 								} else {
 									title = b.getTitle();
 								}

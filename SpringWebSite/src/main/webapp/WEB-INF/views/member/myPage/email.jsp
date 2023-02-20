@@ -6,11 +6,12 @@
 <%@page import="java.io.File"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>이메일 등록/변경</title>
 <%
 /* CSS/JS 파일 캐시 방지 */
 String styleCss = application.getRealPath("/resources/css/mypage.css");
@@ -38,33 +39,30 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 					<span id="t">이메일</span> <br>
 					<div class="email">
 						<form action="/member/myPage/email" method="post">
-							<%
-							MemberVO loginMember = (MemberVO) session.getAttribute("loginMember");
-							if (loginMember != null) {
-								if (loginMember.getEmail().equals("미등록")) {
-							%>
-							<p>
-								<input type="hidden" name='member_id'
-									value="<%=loginMember.getMember_id()%>"> <input
-									name='email' type="email" placeholder="ex)abc@123.com" required>
-								<button type="submit" style="background-color: #d2eed7;">
-									등록</button>
-							</p>
-							<%
-							} else {
-							%>
-							<p>
-								<input type="hidden" name='member_id'
-									value="<%=loginMember.getMember_id()%>"> <input
-									name='email' type="email"
-									placeholder="<%=loginMember.getEmail()%>" required>
-								<button type="submit" style="background-color: #d2eed7;">
-									변경</button>
-							</p>
-							<%
-							}
-							}
-							%>
+							<c:if test="${loginMember!=null}">
+								<c:choose>
+									<c:when test="${loginMember.email eq '미등록'}">
+										<p>
+											<input type="hidden" name='member_id'
+												value="${loginMember.member_id}"> <input
+												name='email' type="email" placeholder="ex)abc@123.com"
+												required>
+											<button type="submit" style="background-color: #d2eed7;">
+												등록</button>
+										</p>
+									</c:when>
+									<c:otherwise>
+										<p>
+											<input type="hidden" name='member_id'
+												value="${loginMember.member_id}"> <input
+												name='email' type="email" placeholder="${loginMember.email}"
+												required>
+											<button type="submit" style="background-color: #d2eed7;">
+												변경</button>
+										</p>
+									</c:otherwise>
+								</c:choose>
+							</c:if>
 						</form>
 					</div>
 				</div>

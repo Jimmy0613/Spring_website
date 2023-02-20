@@ -28,58 +28,41 @@ public class MemberController {
 
 	private MemberService service;
 
-	@GetMapping("/myPage")
+	@GetMapping("/idCheck.do")
+	public String idCheck(@RequestParam("member_id") String member_id, Model model) {
+		int result = service.idCheck(member_id);
+		log.info("아이디 체크함");
+		model.addAttribute("member_id", member_id);
+		model.addAttribute("result", result);
+		return "/member/idCheck";
+	}
+
+	@GetMapping("/myPage/*")
 	public String loginCheck(HttpServletRequest request,
-			@RequestParam(value = "mode", defaultValue = "post") String mode) {
+			@RequestParam(value = "currentPage", defaultValue = "1") int currentPage, Model model) {
 		HttpSession session = request.getSession();
 		MemberVO loginMember = (MemberVO) session.getAttribute("loginMember");
 		if (loginMember != null) {
-			switch (mode) {
-			case "post":
-				return "redirect:/member/myPage/post";
-			case "reply":
-				return "redirect:/member/myPage/reply";
-			case "email":
-				return "redirect:/member/myPage/email";
+			model.addAttribute("currentPage", currentPage);
+			int startIndex = (currentPage - 1) * PageVO.PER_PAGE;
+			String path = request.getServletPath();
+			model.addAttribute("path", path);
+			switch (path) {
+			case "/member/myPage/":
+				path = "/member/myPage/post";
+			case "/member/myPage/post":
+				model.addAttribute("page", service.page(loginMember.getMember_id(), "board"));
+				model.addAttribute("myPost", service.myPost(loginMember.getMember_id(), startIndex));
+				return path;
+			case "/member/myPage/reply":
+				model.addAttribute("page", service.page(loginMember.getMember_id(), "reply"));
+				model.addAttribute("myReply", service.myReply(loginMember.getMember_id(), startIndex));
+				return path;
 			default:
-				return "redirect:/home";
+				return "redirect:/";
 			}
 		} else
 			return "redirect:/member/login";
-	}
-
-	@GetMapping("/myPage/post")
-	public String myPost(@RequestParam(value = "currentPage", defaultValue = "1") int currentPage,
-			HttpServletRequest request, Model model) {
-		HttpSession session = request.getSession();
-		MemberVO loginMember = (MemberVO) session.getAttribute("loginMember");
-		if (loginMember == null)
-			return "redirect:/member/login";
-		model.addAttribute("page", service.page(loginMember.getMember_id()));
-		model.addAttribute("currentPage", currentPage);
-		int startIndex = (currentPage - 1) * PageVO.PER_PAGE;
-		String member_id = loginMember.getMember_id();
-		model.addAttribute("myPost", service.myPost(member_id, startIndex));
-		return "member/myPage/post";
-	}
-
-	@GetMapping("/myPage/reply")
-	public String myReply(@RequestParam(value = "currentPage", defaultValue = "1") int currentPage,
-			HttpServletRequest request, Model model) {
-		HttpSession session = request.getSession();
-		MemberVO loginMember = (MemberVO) session.getAttribute("loginMember");
-		if (loginMember == null)
-			return "redirect:/member/login";
-		model.addAttribute("page", service.page2(loginMember.getMember_id()));
-		model.addAttribute("currentPage", currentPage);
-		int startIndex = (currentPage - 1) * PageVO.PER_PAGE;
-		String member_id = loginMember.getMember_id();
-		model.addAttribute("myReply", service.myReply(member_id, startIndex));
-		return "member/myPage/reply";
-	}
-
-	@GetMapping("/myPage/email")
-	public void myEmail() {
 	}
 
 	@PostMapping("/myPage/email")
@@ -92,15 +75,16 @@ public class MemberController {
 		loginMember.setEmail(mvo.getEmail());
 		model.addAttribute("loginMember", loginMember);
 		request.setAttribute("msg", "이메일 정보가 변경되었습니다.");
-		request.setAttribute("url", "/member/myPage?mode=post");
+		request.setAttribute("url", "/member/myPage/post");
 		return "alert";
 	}
 
-	@GetMapping("/join")
-	public void join() {
+	@GetMapping({ "/join2", "/login" })
+	public void sign(@RequestParam(value = "location", defaultValue = "/") String location, Model model) {
+		model.addAttribute("location", location);
 	}
 
-	@PostMapping("/join")
+	@PostMapping("/join2")
 	public String join(HttpServletRequest request, @RequestParam("pwCheck") String pwCheck, MemberVO mvo) {
 		String alert = service.memberJoin(mvo, pwCheck);
 		if (!alert.equals("")) {
@@ -109,10 +93,6 @@ public class MemberController {
 			return "alert";
 		}
 		return "redirect:/";
-	}
-
-	@GetMapping("/login")
-	public void login() {
 	}
 
 	@PostMapping("/login")

@@ -8,15 +8,8 @@ import com.cre.domain.ReplyVO;
 import com.cre.domain.ReportVO;
 
 public interface BoardService {
-
-	public List<BoardVO> listGeneral(int startIndex);
-
-	public List<BoardVO> listNotice(int startIndex);
-
-	public List<BoardVO> listAnonym(int startIndex);
-
-	public List<BoardVO> listPopular();
-
+	public List<BoardVO> listBoard(int startIndex, String path);
+	
 	public List<BoardVO> homeNotice();
 
 	public List<BoardVO> homePopular();

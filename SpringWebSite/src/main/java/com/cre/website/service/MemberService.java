@@ -13,6 +13,8 @@ public interface MemberService {
 
 	public List<MemberVO> memberList();
 
+	public int idCheck(String member_id);
+
 	public MemberVO getMember(String member_id);
 
 	public String memberLogin(MemberVO mvo);
@@ -23,11 +25,9 @@ public interface MemberService {
 
 	public void myEmail(MemberVO mvo);
 
-	public PageVO page(String member_id);
-
-	public PageVO page2(String member_id);
+	public PageVO page(String member_id, String table);
 
 	public int getTodayCount(String today, String member_id);
-	
+
 	public void rps(String member_id, String result);
 }

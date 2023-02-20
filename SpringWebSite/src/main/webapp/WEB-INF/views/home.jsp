@@ -42,7 +42,7 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 						<div style="padding: 20px;">
 							<span style="color: grey;">로그인이 필요합니다.</span> <br> <br>
 							<a style="font-size: 0.9em;" href="/member/login?location=/">로그인</a>
-							<a style="font-size: 0.9em;" href="/member/join?location=/">
+							<a style="font-size: 0.9em;" href="/member/join2?location=/">
 								회원가입 </a>
 						</div>
 					</c:when>
@@ -55,7 +55,7 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 									${loginMember.heart_count}개
 								</div>
 								<button id="memberinfo"
-									onclick="location.href='/member/myPage?mode=post'">회원정보</button>
+									onclick="location.href='/member/myPage/'">회원정보</button>
 								<form id="logout" action="/member/logout" method="get">
 									<input type="hidden" name="location" value="/">
 									<button type="submit">로그아웃</button>

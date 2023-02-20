@@ -15,6 +15,10 @@
 		(#{member_id}, #{password}, #{member_name},
 		#{email})
 	</insert>
+	<select id="idCheck" resultType="Integer" parameterType="map">
+		SELECT count(*) from members
+		where member_id=#{member_id}
+	</select>
 	<select id="myPost" resultType="com.cre.domain.BoardVO"
 		parameterType="map">
 		SELECT * from board where
@@ -33,14 +37,9 @@
 		UPDATE members set email = #{email} where
 		member_id=#{member_id}
 	</update>
-	<select id="page" resultType="com.cre.domain.PageVO">
-		SELECT count(*) as count from board
-		where
-		writer_id=#{member_id}
-	</select>
-	<select id="page2" resultType="com.cre.domain.PageVO">
-		SELECT count(*) as count from
-		reply
+	<select id="page" parameterType="map"
+		resultType="com.cre.domain.PageVO">
+		SELECT count(*) as count from ${table}
 		where
 		writer_id=#{member_id}
 	</select>
@@ -50,7 +49,8 @@
 		member_id=#{member_id}
 	</select>
 	<insert id="rps" parameterType="map">
-		INSERT into rps_log (member_id, result)
+		INSERT into rps_log (member_id,
+		result)
 		values(#{member_id}, #{result})
 	</insert>
 </mapper>

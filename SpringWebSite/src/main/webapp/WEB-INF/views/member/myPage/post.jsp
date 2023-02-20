@@ -6,11 +6,12 @@
 <%@page import="java.io.File"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>내가 쓴 글</title>
 <%
 /* CSS/JS 파일 캐시 방지 */
 String styleCss = application.getRealPath("/resources/css/mypage.css");
@@ -46,48 +47,43 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 								<hr>
 							</div>
 							<div class="list_z">
-								<%
-								List<BoardVO> myPost = (List<BoardVO>) request.getAttribute("myPost");
-								if (myPost.size() != 0) {
-									for (BoardVO b : myPost) {
-										String title = "";
-										if (b.getTitle().length() > 16) {
-									title = b.getTitle().substring(0, 16) + "...";
-										} else {
-									title = b.getTitle();
-										}
-										if (b.getReply_count() > 0)
-									title += " (" + b.getReply_count() + ")";
-										String category = "자유게시판";
-										if (b.getCategory().equals("anonym")) {
-									category = "익명게시판";
-										} else if (b.getCategory().equals("report")) {
-									category = "신고하기";
-										}
-								%>
-
-								<div class="list_n">
-									<div><%=category%></div>
-									<div style="text-align: left;">
-										<a
-											href="/board/read?post_num=<%=b.getPost_num()%>&category=<%=b.getCategory()%>"><%=title%></a>
-									</div>
-									<div><%=b.getHeart_count()%></div>
-									<div><%=b.getView_count()%></div>
-								</div>
-								<%
-								}
-								%>
-								<%
-								} else {
-								%>
-								<div>작성한 글이 없습니다.</div>
-								<%
-								}
-								%>
+								<c:choose>
+									<c:when test="${myPost.size()>0}">
+										<c:forEach var="p" items="${myPost}">
+											<div class="list_n">
+												<c:choose>
+													<c:when test="${p.category eq 'anonym'}">
+														<div>익명게시판</div>
+													</c:when>
+													<c:when test="${p.category eq 'general'}">
+														<div>자유게시판</div>
+													</c:when>
+													<c:otherwise>
+														<div>공지사항</div>
+													</c:otherwise>
+												</c:choose>
+												<c:set var="t" value="${p.title}" />
+												<c:if test="${p.reply_count>0}">
+													<c:set var="t" value="${p.title} (${p.reply_count})">
+													</c:set>
+												</c:if>
+												<div style="text-align: left;">
+													<a
+														href="/board/read?post_num=${p.post_num}&category=${p.category}">${t}
+													</a>
+												</div>
+												<div>${p.heart_count}</div>
+												<div>${p.view_count}</div>
+											</div>
+										</c:forEach>
+									</c:when>
+									<c:otherwise>
+										<div>작성한 글이 없습니다.</div>
+									</c:otherwise>
+								</c:choose>
 							</div>
 							<div class="page">
-								<%@ include file="/WEB-INF/views/include/page/pageMyPost.jsp"%>
+								<%@ include file="/WEB-INF/views/include/page/pageMyPage.jsp"%>
 							</div>
 						</div>
 					</div>

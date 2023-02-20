@@ -11,6 +11,7 @@
 </head>
 <body>
 	<%
+	String path = (String) request.getAttribute("path");
 	int currentPage = (Integer) request.getAttribute("currentPage");
 	PageVO pvo = (PageVO) request.getAttribute("page");
 	pvo.getPage(currentPage);
@@ -19,46 +20,47 @@
 	//(처음) 관련================================================
 	if (currentPage > 1) {
 	%>
-	<a href="/member/myPost?currentPage=1"
+	<a href="<%=path%>?currentPage=1"
 		style="font-weight: bolder; font-size: 0.8em;">처음</a>
 	<%
 	} else {
 	%>
-	<a style="font-weight: bolder; font-size: 0.8em; cursor:default;">처음</a>
+	<a style="font-weight: bolder; font-size: 0.8em; cursor: default;">처음</a>
 	<%
 	}
 	//========================================================
 	//(이전) 관련================================================
-	if (currentPage > 1) { 
-	if (currentPage % PageVO.PAGE_BLOCK == 1) { 
+	if (currentPage > 1) {
+	if (currentPage % PageVO.PAGE_BLOCK == 1) {
 	%>
 	<a
-		href="/member/myPost?currentPage=<%=((currentPageBlock - 1) * PageVO.PAGE_BLOCK)%>"
+		href="<%=path%>?currentPage=<%=((currentPageBlock - 1) * PageVO.PAGE_BLOCK)%>"
 		style="font-weight: bolder; font-size: 0.8em;">이전</a>
 	<%
 	} else if (currentPage > 1) {
 	%>
-	<a href="/member/myPost?currentPage=<%=(currentPage - 1)%>"
+	<a href="<%=path%>?currentPage=<%=(currentPage - 1)%>"
 		style="font-weight: bolder; font-size: 0.8em;">이전</a>
 	<%
 	}
 	} else {
 	%>
-	<a style="font-weight: bolder; font-size: 0.8em; cursor:default;">이전</a>
+	<a style="font-weight: bolder; font-size: 0.8em; cursor: default;">이전</a>
 	<%
 	}
 	//=========================================================
-	for (int i = (currentPageBlock - 1) * PageVO.PAGE_BLOCK + 1; i < ((currentPageBlock - 1) * PageVO.PAGE_BLOCK + PageVO.PAGE_BLOCK + 1) && i <= totalPage; i++) {
+	for (int i = (currentPageBlock - 1) * PageVO.PAGE_BLOCK
+			+ 1; i < ((currentPageBlock - 1) * PageVO.PAGE_BLOCK + PageVO.PAGE_BLOCK + 1) && i <= totalPage; i++) {
 	%>
 	<%
 	if (i == currentPage) {
 	%>
 	<a style="font-weight: bolder;"
-		href="/member/myPost?currentPage=<%=i%>"><%=i%></a>
+		href="<%=path%>?currentPage=<%=i%>"><%=i%></a>
 	<%
 	} else {
 	%>
-	<a href="/member/myPost?currentPage=<%=i%>"><%=i%></a>
+	<a href="<%=path%>?currentPage=<%=i%>"><%=i%></a>
 	<%
 	}
 	}
@@ -66,29 +68,30 @@
 	//(다음) 관련 ===============================================
 	if (currentPage % PageVO.PAGE_BLOCK == 0) {
 	%>
-	<a href="/member/myPost?currentPage=<%=(currentPageBlock * PageVO.PAGE_BLOCK + 1)%>"
+	<a
+		href="<%=path%>?currentPage=<%=(currentPageBlock * PageVO.PAGE_BLOCK + 1)%>"
 		style="font-weight: bolder; font-size: 0.8em;">다음</a>
 	<%
-	} else if (currentPage < totalPage) { 
+	} else if (currentPage < totalPage) {
 	%>
-	<a href="/member/myPost?currentPage=<%=currentPage + 1%>"
+	<a href="<%=path%>?currentPage=<%=currentPage + 1%>"
 		style="font-weight: bolder; font-size: 0.8em;">다음</a>
 	<%
 	} else {
 	%>
-	<a style="font-weight: bolder; font-size: 0.8em; cursor:default;">다음</a>
+	<a style="font-weight: bolder; font-size: 0.8em; cursor: default;">다음</a>
 	<%
 	}
 	//===========================================================
 	//(마지막) 관련================================================
 	if (currentPage < totalPage) {
 	%>
-	<a href="/member/myPost?currentPage=<%=totalPage%>"
+	<a href="<%=path%>?currentPage=<%=totalPage%>"
 		style="font-weight: bolder; font-size: 0.8em;">마지막</a>
 	<%
-	} else { 
+	} else {
 	%>
-	<a style="font-weight: bolder; font-size: 0.8em; cursor:default;">마지막</a>
+	<a style="font-weight: bolder; font-size: 0.8em; cursor: default;">마지막</a>
 	<%
 	}
 	//========================================================
