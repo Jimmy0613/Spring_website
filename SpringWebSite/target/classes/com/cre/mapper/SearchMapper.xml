@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cre.mapper.SearchMapper">
+<select id="searchMain" parameterType="map"
+		resultType="com.cre.domain.BoardVO">
+		SELECT * from board where
+		(not category='notice') 
+		and (title like CONCAT('%', #{keyword}, '%') 
+		or writer like CONCAT('%', #{keyword}, '%') 
+		or content like CONCAT('%', #{keyword}, '%'))
+		order by post_num desc limit #{startIndex}, 10
+	</select>
+	<select id="smPage"
+		resultType="com.cre.domain.PageVO">
+		SELECT count(*) as count from board where
+		(not category='notice')
+		and	(title like CONCAT('%', #{keyword}, '%')
+		or writer like CONCAT('%', #{keyword}, '%') 
+		or content like CONCAT('%', #{keyword}, '%'))
+	</select>
+	<select id="searchAllCategory" parameterType="map"
+		resultType="com.cre.domain.BoardVO">
+		SELECT * from board	where 
+		(not category='notice') 
+		and (${key} like CONCAT('%', #{keyword}, '%'))
+		order by post_num desc limit #{startIndex}, 10
+	</select>
+	<select id="sacPage" 
+		resultType="com.cre.domain.PageVO">
+		SELECT count(*) as count from board	where 
+		(not category='notice') 
+		and (${key} like CONCAT('%', #{keyword}, '%'))
+	</select>
+	<select id="searchCategory" parameterType="map"
+		resultType="com.cre.domain.BoardVO">
+		SELECT * from board where
+		(category=#{category})
+		and (title like CONCAT('%', #{keyword}, '%') 
+		or writer like CONCAT('%', #{keyword}, '%') 
+		or content like CONCAT('%', #{keyword}, '%'))
+		order by post_num desc limit #{startIndex}, 10
+	</select>
+	<select id="scPage"
+		resultType="com.cre.domain.PageVO">
+		SELECT count(*) as count from board where
+		(category=#{category})
+		and (title like CONCAT('%', #{keyword}, '%') 
+		or writer like CONCAT('%', #{keyword}, '%') 
+		or content like CONCAT('%', #{keyword}, '%'))
+	</select>
+	<select id="search" parameterType="map"
+	resultType="com.cre.domain.BoardVO">
+		SELECT * from board
+		where (category=#{category}) and
+		(${key} like CONCAT('%', #{keyword}, '%'))
+		order by post_num desc limit #{startIndex}, 10
+	</select>
+	<select id="sPage"
+		resultType="com.cre.domain.PageVO">
+		SELECT count(*) as count from board
+		where (category=#{category}) and
+		(${key} like CONCAT('%', #{keyword}, '%'))
+	</select>
+
+</mapper>

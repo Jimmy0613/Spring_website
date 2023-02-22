@@ -9,7 +9,7 @@ import com.cre.domain.ReplyVO;
 
 public interface MemberService {
 
-	public String memberJoin(MemberVO mvo, String pwCheck);
+	public void memberJoin(MemberVO mvo);
 
 	public List<MemberVO> memberList();
 

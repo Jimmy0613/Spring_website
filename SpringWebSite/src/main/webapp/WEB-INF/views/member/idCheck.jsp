@@ -15,7 +15,6 @@
 		if (document.checkIdForm.chResult.value == "N") {
 			alert("다른 아이디를 입력해주세요.");
 			openJoinForm.id.focus();
-
 			window.close();
 		} else {
 			openJoinForm.idDuplication.value = "idCheck";

@@ -8,13 +8,11 @@ import com.cre.domain.BoardVO;
 import com.cre.domain.PageVO;
 import com.cre.domain.ReplyVO;
 import com.cre.domain.ReportVO;
+import com.cre.domain.SearchVO;
 
 public interface BoardMapper {
-	public List<BoardVO> listGeneral(@Param("startIndex") int startIndex);
 
-	public List<BoardVO> listNotice(@Param("startIndex") int startIndex);
-
-	public List<BoardVO> listAnonym(@Param("startIndex") int startIndex);
+	public List<BoardVO> listBoard(@Param("startIndex") int startIndex, @Param("category") String category);
 
 	public List<BoardVO> listPopular();
 
@@ -40,8 +38,6 @@ public interface BoardMapper {
 	public void write(BoardVO bvo);
 
 	public void report(ReportVO rep);
-
-	public List<ReportVO> listReport();
 
 	public void postPlus(BoardVO bvo);
 

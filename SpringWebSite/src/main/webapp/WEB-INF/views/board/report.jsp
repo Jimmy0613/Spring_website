@@ -6,22 +6,18 @@
 <%@page import="com.cre.domain.MemberVO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>SpringWebsite</title>
-<%
-/* CSS/JS 파일 캐시 방지 */
-String styleCss = application.getRealPath("/resources/css/board.css");
-File style = new File(styleCss);
-Date lastModifiedStyle = new Date(style.lastModified());
-SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
-%>
-<link rel="stylesheet"
-	href="/resources/css/common.css?ver=<%=fmt.format(lastModifiedStyle)%>">
-<link rel="stylesheet"
-	href="/resources/css/board.css?ver=<%=fmt.format(lastModifiedStyle)%>">
+<title>신고하기</title>
+
+<link rel="stylesheet" type="text/css"
+	href="${pageContext.request.contextPath}/resources/css/common.css?version=${System.currentTimeMillis()}" />
+<link rel="stylesheet" type="text/css"
+	href="${pageContext.request.contextPath}/resources/css/board.css?version=${System.currentTimeMillis()}" />
+
 </head>
 <body>
 	<div class="container">
@@ -36,22 +32,15 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 				<%@ include file="/WEB-INF/views/include/menuLeft.jsp"%>
 			</div>
 			<div class="write">
-				<%
-				MemberVO loginMember = (MemberVO) request.getAttribute("loginMember");
-				if (loginMember == null) {
-					response.sendRedirect("/board/popular");
-				} else {
-					Long post_num = (Long) request.getAttribute("post_num");
-					String reported_user = (String) request.getAttribute("reported_user");
-				%>
 				<span style="font-size: 1.3em;">신고하기</span>
 				<form action="/board/report" method="post">
 					<input id="writer" type="hidden"
-						value="<%=loginMember.getMember_id()%>" name='reporter_id'>
+						value="${loginMember.member_id}" name='reporter_id'>
+						<input type="hidden" name='reported_user_id' value="${rep.reported_user_id}">
 					<br>글 번호 <input style="width: 50px; height: 30px;"
-						name='post_num' value="<%=post_num%>"> &nbsp;신고할 회원 <input
+						name='post_num' value="${rep.post_num}"> &nbsp;신고할 회원 <input
 						style="width: 100px; height: 30px;" name='reported_user'
-						value="<%=reported_user%>"><br> <span
+						value="${rep.reported_user}"><br> <span
 						style="font-size: 0.7em;">* 댓글일 경우 댓글이 작성된 글의 번호가 입력됩니다.<br>
 						* 익명게시판일 경우 익명이라고 입력됩니다.
 					</span><br> <br> 신고 사유 선택 <select name='reason'
@@ -65,9 +54,7 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 						placeholder="사유가 분명할 경우 생략 가능" name='content'></textarea>
 					<button id="write_button" type="submit">신고하기</button>
 				</form>
-				<%
-				}
-				%>
+
 			</div>
 		</div>
 	</div>

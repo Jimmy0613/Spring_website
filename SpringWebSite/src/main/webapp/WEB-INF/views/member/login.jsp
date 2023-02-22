@@ -9,17 +9,12 @@
 <head>
 <meta charset="UTF-8">
 <title>로그인</title>
-<%
-/* CSS/JS 파일 캐시 방지 */
-String styleCss = application.getRealPath("/resources/css/join.css");
-File style = new File(styleCss);
-Date lastModifiedStyle = new Date(style.lastModified());
-SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
-%>
-<link rel="stylesheet"
-	href="/resources/css/common.css?ver=<%=fmt.format(lastModifiedStyle)%>">
-<link rel="stylesheet"
-	href="/resources/css/join.css?ver=<%=fmt.format(lastModifiedStyle)%>">
+
+<link rel="stylesheet" type="text/css"
+	href="${pageContext.request.contextPath}/resources/css/common.css?version=${System.currentTimeMillis()}" />
+<link rel="stylesheet" type="text/css"
+	href="${pageContext.request.contextPath}/resources/css/join.css?version=${System.currentTimeMillis()}" />
+
 </head>
 <body>
 	<div class="container">
@@ -34,11 +29,10 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 				<div class="join_m">
 					<form class="login" action="/member/login" method="post">
 						<p>
-							<input type="hidden" name="location" value="${location}">
 							아이디<br> <input name='member_id'><br>비밀번호<br>
 							<input name='password' type="password"> <br>
 							<button id="login_button" type="submit">로그인</button>
-							<a href="/member/join?location=/member/login"> 회원가입 </a>
+							<a href="/member/join"> 회원가입 </a>
 						</p>
 					</form>
 				</div>

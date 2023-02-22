@@ -2,7 +2,6 @@ package com.cre.website.service;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -55,26 +54,12 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public String memberJoin(MemberVO mvo, String pwCheck) {
+	public void memberJoin(MemberVO mvo) {
 		if (mvo.getEmail().equals("")) {
 			mvo.setEmail("미등록");
 		}
-		String alert = "";
-		if (isId(mvo.getMember_id())) {
-			return alert = "이미 사용중인 아이디입니다.";
-		} else if (mvo.getMember_id().length() < 6) {
-			return alert = "아이디 글자 수를 확인해주세요.";
-		} else if (mvo.getPassword().length() < 8) {
-			return alert = "비밀번호 글자 수를 확인해주세요.";
-		} else if (!mvo.getPassword().equals(pwCheck)) {
-			return alert = "비밀번호가 일치하지 않습니다.";
-		} else if (mvo.getMember_name().length() < 2) {
-			return alert = "이름은 한 글자 이상 입력해주세요.";
-		} else if ((!mvo.getEmail().equals("미등록")) && isEmail(mvo.getEmail())) {
-			return alert = "이미 사용중인 이메일입니다.";
-		}
 		mapper.join(mvo);
-		return alert;
+		return;
 	}
 
 	@Override

@@ -4,22 +4,18 @@
 <%@page import="java.util.ArrayList"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>SpringWebsite</title>
-<%
-/* CSS/JS 파일 캐시 방지 */
-String styleCss = application.getRealPath("/resources/css/board.css");
-File style = new File(styleCss);
-Date lastModifiedStyle = new Date(style.lastModified());
-SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
-%>
-<link rel="stylesheet"
-	href="/resources/css/common.css?ver=<%=fmt.format(lastModifiedStyle)%>">
-<link rel="stylesheet"
-	href="/resources/css/board.css?ver=<%=fmt.format(lastModifiedStyle)%>">
+<title>글쓰기</title>
+
+<link rel="stylesheet" type="text/css"
+	href="${pageContext.request.contextPath}/resources/css/common.css?version=${System.currentTimeMillis()}" />
+<link rel="stylesheet" type="text/css"
+	href="${pageContext.request.contextPath}/resources/css/board.css?version=${System.currentTimeMillis()}" />
+
 </head>
 <body>
 	<div class="container">
@@ -34,31 +30,24 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 				<%@ include file="/WEB-INF/views/include/menuLeft.jsp"%>
 			</div>
 			<div class="write">
-				<%
-				MemberVO loginMember = (MemberVO) request.getAttribute("loginMember");
-				String cgw = (String) request.getAttribute("category");
-				String cgk = "자유게시판";
-				switch (cgw) {
-				case "anonym":
-					cgk = "익명게시판";
-					break;
-				case "notice":
-					cgk = "공지사항";
-					break;
-				case "report":
-					cgk = "신고하기";
-					break;
-				}
-				String writer = loginMember.getMember_name();
-				if(cgw.equals("anonym")){
-					writer = "익명";
-				}
-				%>
-				<span style="font-size: 1.3em;"><%=cgk %></span>
+				<c:set var="writer" value="${loginMember.member_name}" />
+				<c:choose>
+					<c:when test="${category eq 'anonym'}">
+						<span style="font-size: 1.3em;">익명게시판</span>
+						<c:set var="writer" value="익명" />
+					</c:when>
+					<c:when test="${category eq 'notice'}">
+						<span style="font-size: 1.3em;">공지사항</span>
+					</c:when>
+					<c:when test="${category eq 'general'}">
+						<span style="font-size: 1.3em;">자유게시판</span>
+					</c:when>
+				</c:choose>
 				<form action="/board/write" method="post">
-					<br> <input type="hidden" name='writer_id' value="<%=loginMember.getMember_id()%>">
-					<input id="title" placeholder="제목" name='title'> <input
-						id="writer" value="<%=writer %>" name='writer' readonly><br>
+					<br> <input type="hidden" name='writer_id'
+						value="${loginMember.member_id}"> <input id="title"
+						placeholder="제목" name='title'> <input id="writer"
+						value="${writer}" name='writer' readonly><br>
 					<textarea id="content" placeholder="내용" name='content'></textarea>
 					<button id="write_button" type="submit">글쓰기</button>
 				</form>

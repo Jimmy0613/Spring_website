@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>상단 메뉴</title>
 </head>
 <body>
 	<span><a href="/">HOME</a> <a

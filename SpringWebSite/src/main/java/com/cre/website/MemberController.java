@@ -58,6 +58,8 @@ public class MemberController {
 				model.addAttribute("page", service.page(loginMember.getMember_id(), "reply"));
 				model.addAttribute("myReply", service.myReply(loginMember.getMember_id(), startIndex));
 				return path;
+			case "/member/myPage/email":
+				return path;
 			default:
 				return "redirect:/";
 			}
@@ -79,25 +81,20 @@ public class MemberController {
 		return "alert";
 	}
 
-	@GetMapping({ "/join2", "/login" })
-	public void sign(@RequestParam(value = "location", defaultValue = "/") String location, Model model) {
-		model.addAttribute("location", location);
+	@GetMapping({ "/join", "/login" })
+	public void sign() {
 	}
 
-	@PostMapping("/join2")
-	public String join(HttpServletRequest request, @RequestParam("pwCheck") String pwCheck, MemberVO mvo) {
-		String alert = service.memberJoin(mvo, pwCheck);
-		if (!alert.equals("")) {
-			request.setAttribute("msg", alert);
-			request.setAttribute("url", "/member/join");
-			return "alert";
-		}
-		return "redirect:/";
+	@GetMapping("/joinMember")
+	public String join(HttpServletRequest request, MemberVO mvo) {
+		service.memberJoin(mvo);
+		request.setAttribute("msg", "회원가입이 완료되었습니다.");
+		request.setAttribute("url", "/");
+		return "alert";
 	}
 
 	@PostMapping("/login")
-	public String login(HttpServletRequest request, @RequestParam("location") String location, MemberVO mvo,
-			Model model) {
+	public String login(HttpServletRequest request, MemberVO mvo, Model model) {
 		String alert = service.memberLogin(mvo);
 		if (alert.equals("")) {
 			MemberVO loginMember = service.getMember(mvo.getMember_id());
@@ -108,15 +105,15 @@ public class MemberController {
 			request.setAttribute("url", "/member/login");
 			return "alert";
 		}
-		return "redirect:" + location;
+		return "redirect:/";
 	}
 
 	@GetMapping("/logout")
-	public String logout(SessionStatus status, @RequestParam("location") String location) {
+	public String logout(SessionStatus status) {
 		// session초기화(@SessionAttributes 로 가져온 값은 이걸로만 지울 수 있음)
 		// session.removeAttribute로는 지울 수 없음.
 		status.setComplete();
-		return "redirect:" + location;
+		return "redirect:/";
 	}
 
 	@GetMapping("/rps")

@@ -1,15 +1,19 @@
 package com.cre.website.service;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.cre.domain.BoardVO;
 import com.cre.domain.PageVO;
 import com.cre.domain.ReplyVO;
 import com.cre.domain.ReportVO;
+import com.cre.domain.SearchVO;
 
 public interface BoardService {
-	public List<BoardVO> listBoard(int startIndex, String path);
-	
+	public HashMap<String, Object> search(int startIndex, SearchVO svo);
+
+	public List<BoardVO> listBoard(int startIndex, String category);
+
 	public List<BoardVO> homeNotice();
 
 	public List<BoardVO> homePopular();
@@ -21,8 +25,6 @@ public interface BoardService {
 	public String getWriterId(Long post_num);
 
 	public void report(ReportVO rep);
-
-	public List<ReportVO> listReport();
 
 	public void delete(BoardVO bvo);
 

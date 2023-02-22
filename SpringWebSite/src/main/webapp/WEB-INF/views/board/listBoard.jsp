@@ -12,14 +12,13 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>인기글</title>
+<title>자유게시판</title>
 <link rel="stylesheet" type="text/css"
 	href="${pageContext.request.contextPath}/resources/css/common.css?version=${System.currentTimeMillis()}" />
 <link rel="stylesheet" type="text/css"
 	href="${pageContext.request.contextPath}/resources/css/board.css?version=${System.currentTimeMillis()}" />
 <link rel="stylesheet" type="text/css"
 	href="${pageContext.request.contextPath}/resources/css/list.css?version=${System.currentTimeMillis()}" />
-
 </head>
 <body>
 	<div class="container">
@@ -34,7 +33,7 @@
 				<%@ include file="/WEB-INF/views/include/menuLeft.jsp"%>
 			</div>
 			<div class="list">
-				<div style="font-size: 1.3em; font-weight: bolder; color: black;">인기글
+				<div style="font-size: 1.3em; font-weight: bolder; color: black;">${boardName}
 				</div>
 				<br>
 				<div class="list_m">
@@ -48,29 +47,22 @@
 					<div class="list_z">
 						<c:choose>
 							<c:when test="${list.size()!=0}">
-								<c:forEach var="p" items="${list}">
+								<c:forEach var="post" items="${list}">
 									<div class="list_n" style="background-color: white;">
-										<c:choose>
-											<c:when test="${p.category eq 'anonym'}">
-												<div>익명</div>
-											</c:when>
-											<c:otherwise>
-												<div>${p.writer}</div>
-											</c:otherwise>
-										</c:choose>
+										<div>${post.writer}</div>
 										<div id="t">
-											<c:set var="title" value="${p.title}" />
+											<c:set var="title" value="${post.title}" />
 											<c:if test="${fn:length(title)>16}">
 												<c:set var="title" value="${fn:substring(title,0,16)}..." />
 											</c:if>
-											<c:if test="${p.reply_count>0}">
-												<c:set var="title" value="${title} (${p.reply_count})" />
+											<c:if test="${post.reply_count>0}">
+												<c:set var="title" value="${title} (${post.reply_count})" />
 											</c:if>
-											<a title="${p.title}"
-												href="/board/read?post_num=${p.post_num}">${title} </a>
+											<a title="${post.title}"
+												href="/board/read?post_num=${post.post_num}">${title} </a>
 										</div>
-										<div>${p.heart_count}</div>
-										<div>${p.view_count}</div>
+										<div>${post.heart_count}</div>
+										<div>${post.view_count}</div>
 									</div>
 								</c:forEach>
 							</c:when>
@@ -79,6 +71,16 @@
 							</c:otherwise>
 						</c:choose>
 					</div>
+				</div>
+				<div class="page">
+					<c:if test="${category eq 'notice' || category eq 'general' || category eq 'anonym'}">
+						<%@ include file="/WEB-INF/views/include/page/pageBoard.jsp"%>
+					</c:if>
+				</div>
+				<div>
+					<c:if test="${loginMember!=null}">
+						<button onclick="location.href='/board/write'">글쓰기</button>
+					</c:if>
 				</div>
 			</div>
 		</div>

@@ -6,20 +6,34 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>게시판 왼쪽 메뉴</title>
+<script type="text/javascript">
+	function inputCheck(){
+		var searchForm = document.searchForm;
+		var input = searchForm.keyword.value;
+		if(input=="" || input==null){
+			alert("검색어를 입력하세요.");
+			return false;
+		}
+		searchForm.action = "${contextPath}/board/search";
+		searchForm.method = "get";
+		searchForm.submit();
+	}
+</script>
 </head>
 <body>
 	<div class="member">
-		<div class="member_info" style="min-height: 100px;">
+		<div class="member_info" style="min-height: 145px;">
 			<p style="margin: 10px;">내 정보</p>
 			<c:choose>
 				<c:when test="${loginMember==null}">
 					<div>
-						<span style="color: grey;">로그인이 필요합니다.</span> <br> <br>
-						<a style="font-size: 0.9em;"
-							href="/member/login?location=/board/popular">로그인</a> <a
-							style="font-size: 0.9em;"
-							href="/member/join?location=/board/popular"> 회원가입 </a>
+					<br>
+						<span style="color: grey; padding:10px;">로그인이 필요합니다.</span> <br> <br>
+						<a style="font-size: 0.9em; padding:10px;"
+							href="/member/login">로그인</a> <a
+							style="font-size: 0.9em; padding:10px;"
+							href="/member/join"> 회원가입 </a>
 					</div>
 				</c:when>
 				<c:otherwise>
@@ -30,7 +44,6 @@
 						<div id="f">
 							<button id="memberinfo" onclick="location.href='/member/myPage/'">회원정보</button>
 							<form id="logout" action="/member/logout" method="get">
-								<input type="hidden" name="location" value="/board/popular">
 								<button type="submit">로그아웃</button>
 							</form>
 						</div>
@@ -40,12 +53,12 @@
 		</div>
 		<hr>
 	</div>
-	<form action="/board/search">
+	<form name="searchForm" method="get">
 		<p id="search">
-			<input type="hidden" name="category" value="all"> <input
-				type="hidden" name="key" value="title"> <input
-				name="keyword" placeholder="검색어 입력">
-			<button type="submit">검색</button>
+			<input type="hidden" name='category' value="all"> <input
+				type="hidden" name='key' value="all"> <input
+				name='keyword' placeholder="전체 검색">
+			<button onclick="inputCheck()">검색</button>
 		</p>
 	</form>
 	<div id="board_name">
@@ -64,21 +77,15 @@
 				<a href="/board/anonym">익명게시판</a>
 			</p>
 		</div>
-		<div>
-			<p class="board_name">
-				<c:choose>
-					<c:when test="${loginMember!=null}">
-						<a href="/board/report">신고하기</a>
-						<c:if test="${loginMember.member_id eq 'manager'}">
-							<a href="/board/admin/report">⚙</a>
-						</c:if>
-					</c:when>
-					<c:otherwise>
-						<a title="로그인 후 이용 가능합니다.">신고하기</a>
-					</c:otherwise>
-				</c:choose>
-			</p>
-		</div>
+		<c:if test="${loginMember.member_id eq 'manager'}">
+			<hr>
+			<div>
+				<p class="board_name">
+
+					<a href="/admin/report">신고내역 ⚙</a>
+				</p>
+			</div>
+		</c:if>
 	</div>
 </body>
 </html>

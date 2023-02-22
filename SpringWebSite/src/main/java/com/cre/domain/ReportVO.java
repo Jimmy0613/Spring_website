@@ -8,6 +8,7 @@ public class ReportVO {
 	private Long report_num;
 	private String reporter_id;
 	private String reported_user;
+	private String reported_user_id;
 	private String reason;
 	private String content;
 	private String report_date;

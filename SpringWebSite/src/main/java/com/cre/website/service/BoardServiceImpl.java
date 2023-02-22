@@ -1,5 +1,6 @@
 package com.cre.website.service;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,32 +10,20 @@ import com.cre.domain.BoardVO;
 import com.cre.domain.PageVO;
 import com.cre.domain.ReplyVO;
 import com.cre.domain.ReportVO;
+import com.cre.domain.SearchVO;
 import com.cre.mapper.BoardMapper;
+import com.cre.mapper.SearchMapper;
 
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
 
-@Log4j
 @Service
 public class BoardServiceImpl implements BoardService {
 
 	@Setter(onMethod_ = @Autowired)
 	private BoardMapper mapper;
+	@Setter(onMethod_ = @Autowired)
+	private SearchMapper searchMapper;
 
-	@Override
-	public List<BoardVO> listBoard(int startIndex, String path) {
-		switch (path) {
-		case "general":
-			return mapper.listGeneral(startIndex);
-		case "anonym":
-			return mapper.listAnonym(startIndex);
-		case "notice":
-			return mapper.listNotice(startIndex);
-		default:
-			return mapper.listPopular();
-		}
-	}
-	
 	@Override
 	public List<BoardVO> homeNotice() {
 		return mapper.homeNotice();
@@ -46,8 +35,51 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
+	public List<BoardVO> listBoard(int startIndex, String category) {
+		if (category.equals("popular"))
+			return mapper.listPopular();
+		else
+			return mapper.listBoard(startIndex, category);
+	}
+
+	@Override
 	public PageVO page(String category) {
 		return mapper.page(category);
+	}
+
+	@Override
+	public HashMap<String, Object> search(int startIndex, SearchVO svo) {
+		HashMap<String, Object> search;
+		switch (svo.getCategory()) {
+		case "all":
+			switch (svo.getKey()) {
+			case "all":
+				search = new HashMap<>();
+				search.put("list", searchMapper.searchMain(startIndex, svo.getKeyword()));
+				search.put("page", searchMapper.smPage(svo));
+				return search;
+			default:
+				search = new HashMap<>();
+				search.put("list", searchMapper.searchAllCategory(startIndex, svo.getKey(), svo.getKeyword()));
+				search.put("page", searchMapper.sacPage(svo));
+				return search;
+			}
+		default:
+			switch (svo.getKey()) {
+			case "all":
+				search = new HashMap<>();
+				search.put("list", searchMapper.searchCategory(startIndex, svo.getCategory(), svo.getKeyword()));
+				search.put("page", searchMapper.scPage(svo));
+				return search;
+
+			default:
+				search = new HashMap<>();
+				search.put("list", searchMapper.search(startIndex, svo.getCategory(), svo.getKey(), svo.getKeyword()));
+				search.put("page", searchMapper.sPage(svo));
+				return search;
+
+			}
+		}
 	}
 
 	@Override
@@ -90,11 +122,6 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public void report(ReportVO rep) {
 		mapper.report(rep);
-	}
-
-	@Override
-	public List<ReportVO> listReport() {
-		return mapper.listReport();
 	}
 
 	@Override

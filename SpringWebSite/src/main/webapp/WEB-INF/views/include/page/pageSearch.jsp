@@ -18,7 +18,8 @@
 	<!-- //(처음) 관련================================================ -->
 	<c:choose>
 		<c:when test="${currentPage>1}">
-			<a href="/board/${category}"
+			<a
+				href="/board/search?key=${svo.key}&keyword=${svo.keyword}&category=${svo.category}"
 				style="font-weight: bolder; font-size: 0.8em;">처음</a>
 		</c:when>
 		<c:otherwise>
@@ -31,11 +32,12 @@
 			<c:choose>
 				<c:when test="${currentPage%PageVO.PAGE_BLOCK==1}">
 					<a
-						href="/board/${category}?currentPage=${((currentPageBlock - 1) * PageVO.PAGE_BLOCK)}"
+						href="/board/search?currentPage=${((currentPageBlock - 1) * PageVO.PAGE_BLOCK)}&key=${svo.key}&keyword=${svo.keyword}&category=${svo.category}"
 						style="font-weight: bolder; font-size: 0.8em;">이전</a>
 				</c:when>
 				<c:otherwise>
-					<a href="/board/${category}?currentPage=${(currentPage - 1)}"
+					<a
+						href="/board/search?currentPage=${(currentPage - 1)}&key=${svo.key}&keyword=${svo.keyword}&category=${svo.category}"
 						style="font-weight: bolder; font-size: 0.8em;">이전</a>
 				</c:otherwise>
 			</c:choose>
@@ -44,7 +46,7 @@
 			<a style="font-weight: bolder; font-size: 0.8em; cursor: default;">이전</a>
 		</c:otherwise>
 	</c:choose>
-	
+
 	<!-- 페이지 표시 -->
 	<c:set var="stop" value="false" />
 	<c:forEach var="i"
@@ -59,25 +61,27 @@
 			<c:choose>
 				<c:when test="${i==currentPage}">
 					<a style="font-weight: bolder;"
-						href="/board/${category}?currentPage=${i}">${i}</a>
+						href="/board/search?currentPage=${i}&key=${svo.key}&keyword=${svo.keyword}&category=${svo.category}">${i}</a>
 				</c:when>
 				<c:otherwise>
-					<a href="/board/${category}?currentPage=${i}">${i}</a>
+					<a
+						href="/board/search?currentPage=${i}&key=${svo.key}&keyword=${svo.keyword}&category=${svo.category}">${i}</a>
 				</c:otherwise>
 			</c:choose>
 		</c:if>
 	</c:forEach>
-	
+
 	<!-- //(다음) 관련 =============================================== -->
 	<c:choose>
 		<c:when
 			test="${currentPage % PageVO.PAGE_BLOCK == 0 && currentPage < totalPage}">
 			<a
-				href="/board/${category}?currentPage=${(currentPageBlock * PageVO.PAGE_BLOCK + 1)}"
+				href="/board/search?currentPage=${(currentPageBlock * PageVO.PAGE_BLOCK + 1)}&key=${svo.key}&keyword=${svo.keyword}&category=${svo.category}"
 				style="font-weight: bolder; font-size: 0.8em;">다음</a>
 		</c:when>
 		<c:when test="${currentPage < totalPage}">
-			<a href="/board/${category}?currentPage=${currentPage + 1}"
+			<a
+				href="/board/search?currentPage=${currentPage + 1}&key=${svo.key}&keyword=${svo.keyword}&category=${svo.category}"
 				style="font-weight: bolder; font-size: 0.8em;">다음</a>
 		</c:when>
 		<c:otherwise>
@@ -87,7 +91,8 @@
 	<!-- //(마지막) 관련================================================ -->
 	<c:choose>
 		<c:when test="${currentPage<totalPage}">
-			<a href="/board/${category}?currentPage=${totalPage}"
+			<a
+				href="/board/search?currentPage=${totalPage}&key=${svo.key}&keyword=${svo.keyword}&category=${svo.category}"
 				style="font-weight: bolder; font-size: 0.8em;">마지막</a>
 		</c:when>
 		<c:otherwise>

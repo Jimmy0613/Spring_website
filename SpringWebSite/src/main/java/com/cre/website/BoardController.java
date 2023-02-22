@@ -1,9 +1,11 @@
 package com.cre.website;
 
+import java.util.HashMap;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,7 @@ import com.cre.domain.MemberVO;
 import com.cre.domain.PageVO;
 import com.cre.domain.ReplyVO;
 import com.cre.domain.ReportVO;
+import com.cre.domain.SearchVO;
 import com.cre.website.service.BoardService;
 import com.cre.website.service.MemberService;
 
@@ -37,33 +40,54 @@ public class BoardController {
 	 */
 
 	@GetMapping({ "/general", "/anonym", "/notice", "/popular" })
-	public String listGeneral(HttpServletRequest request, @RequestParam(value = "currentPage", defaultValue = "1") int currentPage, Model model) {
+	public String listGeneral(HttpServletRequest request,
+			@RequestParam(value = "currentPage", defaultValue = "1") int currentPage, Model model) {
 		HttpSession session = request.getSession();
 		String path = request.getServletPath();
-		path = path.substring(7);
+		String category = path.substring(7);
 		model.addAttribute("loginMember", session.getAttribute("loginMember"));
 		model.addAttribute("currentPage", currentPage);
 		int startIndex = (currentPage - 1) * PageVO.PER_PAGE;
-		model.addAttribute("page", service.page(path));
-		model.addAttribute(path, service.listBoard(startIndex, path));
-		model.addAttribute("category", path);
-		return "board/" + path;
+		model.addAttribute("page", service.page(category));
+		model.addAttribute("list", service.listBoard(startIndex, category));
+		model.addAttribute("category", category);
+		switch (category) {
+		case "general":
+			model.addAttribute("boardName", "자유게시판");
+			break;
+		case "anonym":
+			model.addAttribute("boardName", "익명게시판");
+			break;
+		case "notice":
+			model.addAttribute("boardName", "공지사항");
+			break;
+		case "popular":
+			model.addAttribute("boardName", "인기글");
+		}
+		return "/board/listBoard";
+	}
+
+	@GetMapping("/search")
+	public void search(Model model, SearchVO svo,
+			@RequestParam(value = "currentPage", defaultValue = "1") int currentPage) {
+		model.addAttribute("svo", svo);
+		model.addAttribute("currentPage", currentPage);
+		int startIndex = (currentPage - 1) * PageVO.PER_PAGE;
+		HashMap<String, Object> search = service.search(startIndex, svo);
+		PageVO page = (PageVO) search.get("page");
+		List<SearchVO> list = (List<SearchVO>) search.get("list");
+		model.addAttribute("page", page);
+		model.addAttribute("list", list);
 	}
 
 	@GetMapping("/report")
-	public void report(@RequestParam(value = "post_num", defaultValue = "0") Long post_num,
-			@RequestParam(value = "reported_user", defaultValue = "(이름)") String reported_user, Model model) {
-		model.addAttribute("post_num", post_num);
-		model.addAttribute("reported_user", reported_user);
-	}
-
-	@GetMapping("/admin/report")
-	public void report(Model model) {
-		model.addAttribute("list", service.listReport());
+	public void report(ReportVO rep, Model model) {
+		model.addAttribute("rep", rep);
 	}
 
 	@PostMapping("/report")
 	public String report(HttpServletRequest request, ReportVO rep) {
+		rep.setContent(rep.getContent().replaceAll("\r\n", "<br>"));
 		service.report(rep);
 		String alert = "신고를 완료했습니다.";
 		String url = "/board/popular";

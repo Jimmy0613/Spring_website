@@ -12,17 +12,12 @@
 <head>
 <meta charset="UTF-8">
 <title>내가 쓴 글</title>
-<%
-/* CSS/JS 파일 캐시 방지 */
-String styleCss = application.getRealPath("/resources/css/mypage.css");
-File style = new File(styleCss);
-Date lastModifiedStyle = new Date(style.lastModified());
-SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
-%>
-<link rel="stylesheet"
-	href="/resources/css/common.css?ver=<%=fmt.format(lastModifiedStyle)%>">
-<link rel="stylesheet"
-	href="/resources/css/mypage.css?ver=<%=fmt.format(lastModifiedStyle)%>">
+
+<link rel="stylesheet" type="text/css"
+	href="${pageContext.request.contextPath}/resources/css/common.css?version=${System.currentTimeMillis()}" />
+<link rel="stylesheet" type="text/css"
+	href="${pageContext.request.contextPath}/resources/css/mypage.css?version=${System.currentTimeMillis()}" />
+
 </head>
 <body>
 	<div class="container">

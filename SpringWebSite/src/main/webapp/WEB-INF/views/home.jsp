@@ -13,18 +13,11 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>SpringWebsite</title>
-<%
-/* CSS/JS 파일 캐시 방지 */
-String styleCss = application.getRealPath("/resources/css/home.css");
-File style = new File(styleCss);
-Date lastModifiedStyle = new Date(style.lastModified());
-SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
-%>
-<link rel="stylesheet"
-	href="/resources/css/common.css?ver=<%=fmt.format(lastModifiedStyle)%>">
-<link rel="stylesheet"
-	href="/resources/css/home.css?ver=<%=fmt.format(lastModifiedStyle)%>">
+<title>크레닷컴</title>
+<link rel="stylesheet" type="text/css"
+	href="${pageContext.request.contextPath}/resources/css/common.css?version=${System.currentTimeMillis()}" />
+<link rel="stylesheet" type="text/css"
+	href="${pageContext.request.contextPath}/resources/css/home.css?version=${System.currentTimeMillis()}" />
 </head>
 <body>
 	<div class="container">
@@ -41,8 +34,8 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 					<c:when test="${loginMember==null}">
 						<div style="padding: 20px;">
 							<span style="color: grey;">로그인이 필요합니다.</span> <br> <br>
-							<a style="font-size: 0.9em;" href="/member/login?location=/">로그인</a>
-							<a style="font-size: 0.9em;" href="/member/join2?location=/">
+							<a style="font-size: 0.9em;" href="/member/login">로그인</a>
+							<a style="font-size: 0.9em;" href="/member/join">
 								회원가입 </a>
 						</div>
 					</c:when>
@@ -57,7 +50,6 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 								<button id="memberinfo"
 									onclick="location.href='/member/myPage/'">회원정보</button>
 								<form id="logout" action="/member/logout" method="get">
-									<input type="hidden" name="location" value="/">
 									<button type="submit">로그아웃</button>
 								</form>
 							</div>
@@ -99,7 +91,7 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 
 			<div class="notice">
 				<p style="margin: 10px;">
-					공지사항 <a href="/board/list?category=notice"
+					공지사항 <a href="/board/notice"
 						style="font-size: 0.8em;">더보기</a>
 				</p>
 				<div id="notice">
@@ -143,7 +135,8 @@ SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMddhhmmssSSS");
 				<p style="margin: 10px;">
 					COLORFUL(게임) <a style="font-size: 0.8em;">바로가기</a>
 				</p>
-				<img src="/resources/img/rpg.png" style="width: 320px; margin-left: 10px;">
+				<img src="/resources/img/rpg.png"
+					style="width: 320px; margin-left: 10px;">
 			</div>
 			<div class="sample"></div>
 		</div>

@@ -2,6 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cre.mapper.BoardMapper">
+	<!-- 정렬 금지!!!!! -->
+	<!-- 한번에 sql문 여러개 쓰려면 root-context.xml에서 db url db명 뒤에 ?allowMultiQueries=true를 붙여줘야함.
+	<property name="url" value="jdbc:log4jdbc:mysql://localhost:3306/spring_web_site?allowMultiQueries=true"></property> 		
+	이렇게 수정하고 프로젝트 우클릭해서 run as-> maven install 하고 다시 우클릭해서 maven-> project update하고나서	실행해야함 -->
 	<select id="homeNotice" resultType="com.cre.domain.BoardVO">
 		SELECT * from board where
 		category='notice' limit 0, 4
@@ -13,32 +17,22 @@
 		desc,
 		view_count desc limit 0, 5
 	</select>
-	<select id="listGeneral" parameterType="map"
+	<select id="listBoard" parameterType="map"
 		resultType="com.cre.domain.BoardVO">
-		SELECT * from board where category='general'
+		SELECT * from board where category=#{category}
 		order by
-		post_num desc limit #{startIndex}, 10
+		post_num desc limit #{startIndex}, 10	
 	</select>
-	<select id="listNotice" parameterType="map"
-		resultType="com.cre.domain.BoardVO">
-		SELECT * from board where category='notice'
-		order by
-		post_num desc limit #{startIndex}, 10
-	</select>
-	<select id="listAnonym" parameterType="map"
-		resultType="com.cre.domain.BoardVO">
-		SELECT * from board where category='anonym'
-		order by
-		post_num desc limit #{startIndex}, 10
+	<select id="page" parameterType="map"
+		resultType="com.cre.domain.PageVO">
+		SELECT count(*) as count from board where
+		category=#{category}
 	</select>
 	<select id="listPopular" resultType="com.cre.domain.BoardVO">
 		SELECT * from board
 		where(category = 'general' or category = 'anonym')
 		order by heart_count
 		desc, view_count desc limit 0, 10
-	</select>
-	<select id="listReport" resultType="com.cre.domain.ReportVO">
-		SELECT * from report;
 	</select>
 	<insert id="write">
 		INSERT into board(category, writer, writer_id, title,
@@ -48,8 +42,8 @@
 	</insert>
 	<insert id="report">
 		INSERT into
-		report(post_num,reporter_id,reported_user,reason,content)
-		values(#{post_num},#{reporter_id},#{reported_user},#{reason},#{content})
+		report(post_num,reporter_id,reported_user,reported_user_id,reason,content)
+		values(#{post_num},#{reporter_id},#{reported_user},#{reported_user_id},#{reason},#{content})
 	</insert>
 	<update id="postPlus">
 		UPDATE members set post_count = post_count + 1 where
@@ -93,10 +87,6 @@
 		content) values(#{category}, #{post_num}, #{writer},
 		#{writer_id}, #{content})
 	</insert>
-	<!-- 한번에 sql문 여러개 쓰려면 root-context.xml에서 db url db명 뒤에 ?allowMultiQueries=true를 
-		붙여줘야함. <property name="url" value="jdbc:log4jdbc:mysql://localhost:3306/spring_web_site?allowMultiQueries=true"></property> 
-		이렇게 수정하고 프로젝트 우클릭해서 run as-> maven install 하고 다시 우클릭해서 maven-> project update하고나서 
-		실행해야함 -->
 	<update id="rePlus">
 		UPDATE board set reply_count = reply_count + 1 where
 		post_num = #{post_num};
@@ -124,9 +114,4 @@
 		UPDATE board set title=#{title}, content=#{content}
 		where post_num=#{post_num}
 	</update>
-	<select id="page" parameterType="map"
-		resultType="com.cre.domain.PageVO">
-		SELECT count(*) as count from board where
-		category=#{category}
-	</select>
 </mapper>
